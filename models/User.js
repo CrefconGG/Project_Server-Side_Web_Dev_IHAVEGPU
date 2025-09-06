@@ -1,11 +1,7 @@
 import mongoose from 'mongoose'
 
 const UserSchema = new mongoose.Schema({
-  userID: {
-    type: String,
-    require: true,
-    unique: true
-  },
+
   name: {
     type: String,
     required: true
@@ -22,6 +18,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ['customer', 'admin'], 
     default: 'customer'
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
   }
 })
 

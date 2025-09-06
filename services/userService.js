@@ -2,15 +2,24 @@ import User from "../models/User.js"
 
 const userService = {
   getAllUsers: async () => {
-    return await User.find();
+    return await User.find({ isDeleted: false});
   },
   getUserById: async (id) => {
-    return await User.findById(id); 
+    return await User.findById(id);
   },
-  createUser: async(userID, name, email, password, role) => {
-    return await User.createUser({
-      userID, name, email, password, role
+  createUser: async (name, email, password, role) => {
+    return await User.create({
+      name, email, password, role
     })
+  },
+  updateUser: async (id, data) => {
+    return await User.findByIdAndUpdate(id, data, { new: true });
+  },
+  softDeleteUser: async (id) => {
+    return await User.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+  },
+  restoreUser: async (id) => {
+    return await User.findByIdAndUpdate(id, { isDeleted: false }, { new: true });
   }
 }
 
