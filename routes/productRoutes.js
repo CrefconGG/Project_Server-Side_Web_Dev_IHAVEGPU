@@ -1,4 +1,4 @@
-import productController from "../controllers/productController";
+import productController from "../controllers/productController.js";
 
 const useProductRoute = (router) => {
     router.get('/products',productController.getAllProducts);
