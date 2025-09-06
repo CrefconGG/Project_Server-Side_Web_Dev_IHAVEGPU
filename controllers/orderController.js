@@ -49,8 +49,11 @@ const orderController = {
     deleteOrder: async (req, res) => {
         try {
             const id = req.params.id;
-            await orderService.deleteOrder(id);
-            res.status(200).json({ message: 'Order deleted successfully' });
+            const deletedOrder = await orderService.deleteOrder(id);
+            if (!deletedOrder) {
+                return res.status(404).json({ message: 'Order not found' });
+            }
+            res.status(200).json({ message: 'Order soft deleted successfully' });
         } catch (err) {
             res.status(500).json(err);
         }
@@ -59,7 +62,7 @@ const orderController = {
         try {
             const user = req.params.userID;
             await orderService.deleteOrdersByUserId(user);
-            res.status(200).json({ message: 'Orders deleted successfully' });
+            res.status(200).json({ message: 'Orders soft deleted successfully' });
         } catch (err) {
             res.status(500).json(err);
         }

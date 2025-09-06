@@ -29,7 +29,16 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'canceled', 'paid'],
         default: 'pending'
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
+
 })
 
 const Order = mongoose.model("Order", OrderSchema);

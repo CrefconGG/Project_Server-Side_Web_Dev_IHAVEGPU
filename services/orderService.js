@@ -2,10 +2,10 @@ import Order from "../models/Order.js";
 
 const orderService = {
     getAllOrders: async () => {
-        return await Order.find().populate('user').populate('products.productID');
+        return await Order.find({ isDeleted: false }).populate('user').populate('products.productID');
     },
     getOrderById: async (id) => {
-        return await Order.findById(id).populate('user').populate('products.productID');
+        return await Order.findOne({ _id: id, isDeleted: false }).populate('user').populate('products.productID');
     },
     createOrder: async(user, products, totalAmount, status) => {
         return await Order.create({
@@ -13,16 +13,16 @@ const orderService = {
         })
     },
     oderByUserId: async (user) => {
-        return await Order.find({ user }).populate('user').populate('products.productID');
+        return await Order.find({ user, isDeleted: false }).populate('user').populate('products.productID');
     },
     updateOrderStatus: async (id, status) => {
         return await Order.findByIdAndUpdate(id, { status }, { new: true });
     },
     deleteOrder: async (id) => {
-        return await Order.findByIdAndDelete(id);
+        return await Order.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
     },
     deleteOrdersByUserId: async (user) => {
-        return await Order.deleteMany({ user });
+        return await Order.updateMany({ user }, { isDeleted: true });
     }
 
 }
