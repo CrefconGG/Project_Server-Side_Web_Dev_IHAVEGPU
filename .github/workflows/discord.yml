@@ -1,28 +1,41 @@
-name: Notify Discord on Push
+name: แจ้งเตือน Discord เมื่อมีการ Push
 
 on:
-  push:   # จะทำงานทุกครั้งที่มีการ push
+  push:
     branches:
-      - "**"
+      - '**'
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Send commit info to Discord
+      - name: ส่ง Commit ไป Discord
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          AUTHOR="${{ github.actor }}"
-          REPO="${{ github.repository }}"
-          BRANCH="${{ github.ref_name }}"
-          COMMIT_MSG=$(echo "${{ github.event.head_commit.message }}" | jq -Rsa .)
-          COMMIT_URL="${{ github.event.head_commit.url }}"
-          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          # -------------------------------
+          # เก็บค่าข้อมูลพื้นฐานของ Push
+          # -------------------------------
+          REPO="${{ github.repository }}"          # repo ที่ถูก push (เช่น user/myrepo)
+          BRANCH="${{ github.ref_name }}"          # branch ที่ถูก push (เช่น main)
+          AUTHOR="${{ github.actor }}"             # คนที่ push
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)   # commit id ย่อ
 
-          CONTENT="📢 **New push on $REPO**\nBranch: \`$BRANCH\`\nCommit: [$SHORT_SHA]($COMMIT_URL)\nBy: $AUTHOR\nMessage: $COMMIT_MSG"
+          # -------------------------------
+          # ดึง commit messages ทั้งหมดที่อยู่ใน push
+          # -------------------------------
+          COMMITS=$(echo '${{ toJson(github.event.commits) }}' \
+            | jq -r '.[] | "- [" + .id[0:7] + "](\" + .url + ") " + .message + " (by " + .author.name + ")"' \
+            | head -n 5)
 
+          # -------------------------------
+          # สร้างข้อความที่จะส่งไปยัง Discord
+          # -------------------------------
+          CONTENT="📢 **มีการ Push ใหม่ที่ $REPO**\nBranch: \`$BRANCH\`\nโดย: $AUTHOR\n\nCommits:\n$COMMITS"
+
+          # ส่งแบบ suppress embeds
           curl -H "Content-Type: application/json" \
                -X POST \
-               -d "{\"content\": $CONTENT}" \
+               -d "$(jq -n --arg content "$CONTENT" '{content:$content, flags:4096}')" \
                "$DISCORD_WEBHOOK"
+
