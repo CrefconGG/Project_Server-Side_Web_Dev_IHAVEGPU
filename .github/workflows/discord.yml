@@ -1,28 +1,29 @@
 name: Notify Discord on Push
 
 on:
-  push:   # จะทำงานทุกครั้งที่มีการ push
-    branches:
-      - "**"
+  push:
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Send commit info to Discord
+      - name: Send push info to Discord
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          AUTHOR="${{ github.actor }}"
           REPO="${{ github.repository }}"
           BRANCH="${{ github.ref_name }}"
-          COMMIT_MSG=$(echo "${{ github.event.head_commit.message }}" | jq -Rsa .)
+          AUTHOR="${{ github.actor }}"
           COMMIT_URL="${{ github.event.head_commit.url }}"
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
 
-          CONTENT="📢 **New push on $REPO**\nBranch: \`$BRANCH\`\nCommit: [$SHORT_SHA]($COMMIT_URL)\nBy: $AUTHOR\nMessage: $COMMIT_MSG"
+          # ดึง commit ทั้งหมดใน push
+          COMMITS=$(echo '${{ toJson(github.event.commits) }}' | jq -r '.[] | "- [" + .id[0:7] + "](" + .url + ") " + .message + " (by " + .author.name + ")"' | head -n 5)
+
+          # ถ้า push หลาย commit จะโชว์ไม่เกิน 5 อัน
+          CONTENT="📢 **New push to $REPO**\nBranch: \`$BRANCH\`\nBy: $AUTHOR\n\nCommits:\n$COMMITS"
 
           curl -H "Content-Type: application/json" \
                -X POST \
-               -d "{\"content\": $CONTENT}" \
+               -d "$(jq -n --arg content "$CONTENT" '{content:$content}')" \
                "$DISCORD_WEBHOOK"
