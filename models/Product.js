@@ -1,11 +1,6 @@
 import mongoose from "mongoose";
 
 const ProductSchema = new mongoose.Schema({
-    productID: {
-        type: String,
-        require: true,
-        unique: true
-    },
     name:{
         type: String,
         required: true
@@ -24,6 +19,10 @@ const ProductSchema = new mongoose.Schema({
     },
     imagesURL: {
         type: String
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 
 
