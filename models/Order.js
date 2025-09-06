@@ -33,10 +33,6 @@ const OrderSchema = new mongoose.Schema({
     isDeleted: {
         type: Boolean,
         default: false
-    },
-    isDeleted: {
-        type: Boolean,
-        default: false
     }
 
 })
