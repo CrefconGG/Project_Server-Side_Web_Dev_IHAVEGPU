@@ -8,6 +8,7 @@ const useOrderRoute = async (router) => {
   router.put('/order/:id', orderController.updateOrderStatus)
   router.delete('/order/:id', orderController.deleteOrder)
   router.delete('/order/user/:userID', orderController.deleteOrdersByUserId)
+  router.patch('/order/:id', orderController.restoreOrder)
 }
 
 export default useOrderRoute

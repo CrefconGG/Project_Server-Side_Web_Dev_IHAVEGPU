@@ -23,6 +23,9 @@ const orderService = {
     },
     deleteOrdersByUserId: async (user) => {
         return await Order.updateMany({ user }, { isDeleted: true });
+    },
+    restoreOrder: async (id) => {
+        return await Order.findByIdAndUpdate(id, { isDeleted: false }, { new: true });
     }
 
 }

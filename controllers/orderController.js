@@ -66,6 +66,18 @@ const orderController = {
         } catch (err) {
             res.status(500).json(err);
         }
+    },
+    restoreOrder: async (req, res) => {
+        try {
+            const id = req.params.id;
+            const restoredOrder = await orderService.restoreOrder(id);
+            if (!restoredOrder) {
+                return res.status(404).json({ message: 'Order not found or not deleted' });
+            }
+            res.status(200).json(restoredOrder);
+        } catch (err) {
+            res.status(500).json(err);
+        }
     }
 };
 
