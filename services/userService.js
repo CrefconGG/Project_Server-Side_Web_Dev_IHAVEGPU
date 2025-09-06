@@ -7,9 +7,9 @@ const userService = {
   getUserById: async (id) => {
     return await User.findById(id); 
   },
-  create: async(name, age, phone) => {
-    return await User.create({
-      name, age, phone
+  createUser: async(userID, name, email, password, role) => {
+    return await User.createUser({
+      userID, name, email, password, role
     })
   }
 }

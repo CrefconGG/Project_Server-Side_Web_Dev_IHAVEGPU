@@ -19,10 +19,10 @@ const userController = {
     }
     
   },
-  create: async (req, res) => {
+  createUser: async (req, res) => {
     try{
-      const { name, age, phone } = req.body
-      const user = await userService.create(name, age, phone)
+      const { userID, name, email, password, role } = req.body
+      const user = await userService.create(userID, name, email, password, role)
       res.status(201).json(user)
     } catch(err){
       res.status(500).json(err)
