@@ -15,42 +15,43 @@ const cartController = {
     },
     addItem: async (req, res) => {
         try {
-            const { userID, productID, quantity } = req.body;
+            const { userID } = req.params;
+            const { productID, quantity } = req.body;
             const cart = await cartService.addItemToCart(userID, productID, quantity);
             res.status(200).json(cart);
         } catch (err) {
-            res.status(500).json(err);
+            res.status(500).json({ error: err.message });
         }
     },
+
     removeItem: async (req, res) => {
         try {
-            const { userID, productID } = req.body;
+            const { userID, productID } = req.params;
             const cart = await cartService.removeItemFromCart(userID, productID);
             res.status(200).json(cart);
         } catch (err) {
-            res.status(500).json(err);
+            res.status(500).json({ error: err.message });
         }
     },
+
     updateItemQuantity: async (req, res) => {
         try {
-            const { userID, productID, quantity } = req.body;
-            const cart = await cartService.updateItemQuantity(
-                userID,
-                productID,
-                quantity
-            );
+            const { userID, productID } = req.params;
+            const { quantity } = req.body;
+            const cart = await cartService.updateItemQuantity(userID, productID, quantity);
             res.status(200).json(cart);
         } catch (err) {
-            res.status(500).json(err);
+            res.status(500).json({ error: err.message });
         }
     },
+
     clearCart: async (req, res) => {
         try {
-            const { userID } = req.body;
+            const { userID } = req.params;
             const cart = await cartService.clearCart(userID);
             res.status(200).json(cart);
         } catch (err) {
-            res.status(500).json(err);
+            res.status(500).json({ error: err.message });
         }
     }
 };
