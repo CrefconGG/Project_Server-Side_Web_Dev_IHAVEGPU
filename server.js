@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import mongoose from 'mongoose'
 import router from './routes/router.js'
+import webRouter from './routes/webRouter.js'
 
 const app = express()
 const port = 3000
@@ -27,10 +28,10 @@ await connect()
 app.use(express.json())
 app.use("/api", router)
 
-// Home route to render EJS view
-app.get('/', (req, res) => {
-   res.render('index');
-});
+app.use("/", webRouter)
+
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

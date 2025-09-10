@@ -1,10 +1,17 @@
 import productService from "../services/productService.js";
 
 const productController = {
-    getAllProducts: async (req, res) => {
+    getProductView: async (req, res) => {
         try {
             const products = await productService.getAllProducts();
             res.render('listProducts', { products }); // Render EJS view with products
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    },
+    getAllProducts: async (req, res) => {
+        try {
+            const products = await productService.getAllProducts();
         } catch (err) {
             res.status(500).json(err);
         }
