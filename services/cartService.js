@@ -15,9 +15,9 @@ const cartService = {
         );
 
         if (itemIndex > -1) {
-            cart.items[itemIndex].quantity += quantity; // ถ้ามีแล้ว บวกเพิ่ม
+            cart.items[itemIndex].quantity += quantity;
         } else {
-            cart.items.push({ productID, quantity }); // ถ้าไม่มี ให้เพิ่มใหม่
+            cart.items.push({ productID, quantity });
         }
 
         return await cart.save();
