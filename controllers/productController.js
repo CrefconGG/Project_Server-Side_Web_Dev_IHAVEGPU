@@ -1,17 +1,10 @@
 import productService from "../services/productService.js";
 
 const productController = {
-    getProductView: async (req, res) => {
-        try {
-            const products = await productService.getAllProducts();
-            res.render('listProducts', { products }); // Render EJS view with products
-        } catch (err) {
-            res.status(500).json(err);
-        }
-    },
     getAllProducts: async (req, res) => {
         try {
             const products = await productService.getAllProducts();
+            res.status(200).json(products);
         } catch (err) {
             res.status(500).json(err);
         }
@@ -20,10 +13,7 @@ const productController = {
         try {
             const id = req.params.id;
             const product = await productService.getProductsByID(id);
-            if (!product) {
-                return res.status(404).send('Product not found');
-            }
-            res.render('showProduct', { product }); // Render EJS view for single product
+            res.status(200).json(product);
         } catch (err) {
             res.status(500).json(err);
         }
@@ -65,6 +55,23 @@ const productController = {
             res.status(500).json(err)
         }
     },
+    getProductView: async (req, res) => {
+        try {
+            const products = await productService.getAllProducts();
+            res.render('listProducts', { products }); // Render EJS view with products
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    },
+    getDetailsView: async (req, res) => {
+        try {
+            const id = req.params.id;
+            const product = await productService.getProductsByID(id);
+            res.render('showProduct', { product }); // Render EJS view with product details
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    }
 }
 
 export default productController

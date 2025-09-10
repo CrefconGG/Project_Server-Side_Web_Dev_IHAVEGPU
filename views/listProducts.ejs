@@ -14,7 +14,7 @@
                 <% products.forEach(function(product) { %>
                     <div class="product-card">
                         <img src="<%= product.imagesURL %>" alt="<%= product.name %>" style="max-width:150px;">
-                        <h2><a href="/api/products/<%= product._id %>"><%= product.name %></a></h2>
+                        <h2><a href="/products/<%= product._id %>"><%= product.name %></a></h2>
                         <p><strong>Price:</strong> $<%= product.price %></p>
                         <form action="/cart/<%= product._id %>" method="POST">
                             <input type="hidden" name="quantity" value="1">
