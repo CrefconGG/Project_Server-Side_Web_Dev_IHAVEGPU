@@ -27,8 +27,7 @@ await connect()
 
 app.use(express.json())
 app.use("/api", router)
-
-app.use("/", webRouter)
+app.use(webRouter)
 
 
 
