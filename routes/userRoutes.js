@@ -8,8 +8,8 @@ const useUserRoute = async (router) => {
   router.put('/user/:id', authMiddleware("admin"), userController.updateUser)
   router.delete('/user/:id', authMiddleware("admin"), userController.softDeleteUser)
   router.patch('/user/:id', authMiddleware("admin"), userController.restoreUser)
-  router.post('/login', authMiddleware("admin"), userController.login)
-  router.post('/register', authMiddleware("admin"), userController.register)  
+  router.post('/login', userController.login)
+  router.post('/register', userController.register)  
 }
 
 export default useUserRoute
