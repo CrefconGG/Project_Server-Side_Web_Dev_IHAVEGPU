@@ -12,6 +12,9 @@ const userService = {
       name, email, password, role
     })
   },
+  getByUsername: async (name) => {
+    return await User.findOne({ name });
+  },
   updateUser: async (id, data) => {
     return await User.findByIdAndUpdate(id, data, { new: true });
   },

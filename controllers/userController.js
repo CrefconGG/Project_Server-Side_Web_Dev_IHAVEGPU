@@ -1,4 +1,6 @@
 import userService from "../services/userService.js"
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 const userController = {
   getAllUsers: async (req, res) => {
@@ -56,6 +58,38 @@ const userController = {
     } catch (err) {
       res.status(500).json(err)
     }
+  },
+  register: async (req, res) => {
+    try {
+      const { name, email, password } = req.body;
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = await userService.createUser(name, email, hashedPassword, 'user');
+      res.status(201).json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+  login: async (req, res) => {
+    const { name, password } = req.body
+    const user = await userService.getByUsername(name);
+    if(!user){
+      res.user(401).json({
+        message: "Username or Password incorrect"
+      });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if(!isMatch){
+      res.user(401).json({
+        message: "Username or Password incorrect"
+      });
+    }
+    
+    const jwt_secret = process.env.JWT_SECRET;
+    const payload = { name: user.name, userId: user._id, role: user.role };
+    const token = jwt.sign(payload, jwt_secret, { expiresIn: "3d" });
+    res.status(200).json({
+      token: token
+    })
   }
 }
 
