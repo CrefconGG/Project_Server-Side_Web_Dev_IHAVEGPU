@@ -25,12 +25,12 @@ const connect = async () => {
 }
 await connect()
 
-app.use(express.json())
+// Middleware to parse JSON and URL-encoded data
+app.use(express.json()); // To parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // To parse URL-encoded bodies
+
 app.use("/api", router)
 app.use(webRouter)
-
-
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

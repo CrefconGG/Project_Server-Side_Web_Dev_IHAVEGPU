@@ -70,26 +70,69 @@ const userController = {
     }
   },
   login: async (req, res) => {
-    const { name, password } = req.body
-    const user = await userService.getByUsername(name);
-    if(!user){
-      res.user(401).json({
-        message: "Username or Password incorrect"
-      });
+    try {
+      const { name, password } = req.body;
+      const user = await userService.getByUsername(name);
+
+      if (!user) {
+        return res.status(401).json({
+          message: "Username or Password incorrect"
+        });
+      }
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({
+          message: "Username or Password incorrect"
+        });
+      }
+
+      const jwt_secret = process.env.JWT_SECRET;
+      const payload = { name: user.name, userId: user._id, role: user.role };
+      const token = jwt.sign(payload, jwt_secret, { expiresIn: "3d" });
+
+      res.status(200).json({ token });
+      res.redirect("/products");
+    } catch (err) {
+      res.status(500).json({ error: err.message });
     }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if(!isMatch){
-      res.user(401).json({
-        message: "Username or Password incorrect"
-      });
+  },
+  getRegisterView: (req, res) => {
+    res.render('register');
+  },
+  getLoginView: (req, res) => {
+    res.render('login');
+  },
+  postLoginView: async (req, res) => {
+    console.log("Body received:", req.body);
+    try {
+      const { identifier, password } = req.body;
+
+      const user = await userService.getByEmailOrUsername(identifier); 
+      if (!user) return res.render("login", { error: "User not found" });
+
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) return res.render("login", { error: "Invalid password" });
+
+      res.redirect("/listproducts");
+    } catch (err) {
+      console.error(err);
+      res.render("login", { error: "Something went wrong" });
     }
-    
-    const jwt_secret = process.env.JWT_SECRET;
-    const payload = { name: user.name, userId: user._id, role: user.role };
-    const token = jwt.sign(payload, jwt_secret, { expiresIn: "3d" });
-    res.status(200).json({
-      token: token
-    })
+  },
+  postRegisterView: async (req, res) => {
+    console.log("Body received:", req.body);
+    try {
+      const { name, email, password } = req.body;
+      const hashed = await bcrypt.hash(password, 10);
+
+      await userService.createUser(name, email, hashed, "user");
+
+      res.redirect("/login");
+    } catch (err) {
+      console.error(err);
+      res.render("register", { error: "Something went wrong" });
+    }
   }
 }
 

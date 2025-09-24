@@ -2,7 +2,7 @@ import User from "../models/User.js"
 
 const userService = {
   getAllUsers: async () => {
-    return await User.find({ isDeleted: false});
+    return await User.find({ isDeleted: false });
   },
   getUserById: async (id) => {
     return await User.findById(id);
@@ -10,10 +10,13 @@ const userService = {
   createUser: async (name, email, password, role) => {
     return await User.create({
       name, email, password, role
-    })
+    });
   },
   getByUsername: async (name) => {
     return await User.findOne({ name });
+  },
+  getByEmailOrUsername: async (input) => {
+    return await User.findOne({ $or: [{ email: input }, { name: input }] });
   },
   updateUser: async (id, data) => {
     return await User.findByIdAndUpdate(id, data, { new: true });
@@ -26,4 +29,4 @@ const userService = {
   }
 }
 
-export default userService
+export default userService;
