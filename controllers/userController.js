@@ -114,7 +114,7 @@ const userController = {
       const match = await bcrypt.compare(password, user.password);
       if (!match) return res.render("login", { error: "Invalid password" });
 
-      res.redirect("/listproducts");
+      res.redirect("/");
     } catch (err) {
       console.error(err);
       res.render("login", { error: "Something went wrong" });
