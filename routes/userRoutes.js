@@ -3,13 +3,13 @@ import authMiddleware from "../middlewares/authMiddleware.js"
 
 const useUserRoute = async (router) => {
   router.get('/user', authMiddleware("admin"), userController.getAllUsers)
-  router.get('/user/:id', userController.getUserById)
-  router.post('/user',userController.createUser)
-  router.put('/user/:id', userController.updateUser)
-  router.delete('/user/:id', userController.softDeleteUser)
-  router.patch('/user/:id', userController.restoreUser)
-  router.post('/user/login', userController.login)
-  router.post('/user/register', userController.register)  
+  router.get('/user/:id', authMiddleware("admin"), userController.getUserById)
+  router.post('/user', authMiddleware("admin"), userController.createUser)
+  router.put('/user/:id', authMiddleware("admin"), userController.updateUser)
+  router.delete('/user/:id', authMiddleware("admin"), userController.softDeleteUser)
+  router.patch('/user/:id', authMiddleware("admin"), userController.restoreUser)
+  router.post('/login', authMiddleware("admin"), userController.login)
+  router.post('/register', authMiddleware("admin"), userController.register)  
 }
 
 export default useUserRoute
