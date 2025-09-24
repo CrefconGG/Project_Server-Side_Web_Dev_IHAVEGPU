@@ -1,15 +1,15 @@
 import express from 'express'
 import productController from "../controllers/productController.js"
-import userController from "../controllers/userController.js"
+import userViewController from '../controllers/userViewController.js'
 
 const router = express.Router()
 
 router.get('/', productController.getProductView);
 router.get('/products/:id', productController.getDetailsView);
 
-router.get('/login', userController.getLoginView);
-router.post('/login', userController.postLoginView);
-router.get('/register', userController.getRegisterView);
-router.post('/register', userController.postRegisterView);
+router.get('/login', userViewController.getLoginView);
+router.post('/login', userViewController.postLoginView);
+router.get('/register', userViewController.getRegisterView);
+router.post('/register', userViewController.postRegisterView);
 
 export default router
