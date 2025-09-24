@@ -2,6 +2,18 @@
     <title>Product List</title>
 </head>
 <body>
+    <!-- แถบด้านบน -->
+    <div class="navbar">
+        <div class="logo">I HAVE GPU</div>
+        <div class="profile">
+            <% if (user) { %>
+                <span>Welcome, <%= user.username %></span>
+                <a href="/logout">Logout</a>
+            <% } else { %>
+                <a href="/login">Login</a>
+            <% } %>
+        </div>
+    </div>
     <div class="container">
         <h1>Product List</h1>
         <div class="product-list">
