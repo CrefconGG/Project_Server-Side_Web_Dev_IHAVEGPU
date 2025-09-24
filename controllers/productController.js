@@ -58,7 +58,10 @@ const productController = {
     getProductView: async (req, res) => {
         try {
             const products = await productService.getAllProducts();
-            res.render('listProducts', { products }); // Render EJS view with products
+            res.render("listproducts", { //render products with user object
+            products,
+            user: req.user || null 
+        });
         } catch (err) {
             res.status(500).json(err);
         }
