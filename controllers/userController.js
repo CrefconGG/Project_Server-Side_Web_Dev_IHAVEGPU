@@ -92,7 +92,6 @@ const userController = {
       const token = jwt.sign(payload, jwt_secret, { expiresIn: "3d" });
 
       res.status(200).json({ token });
-      res.redirect("/products");
     } catch (err) {
       res.status(500).json({ error: err.message });
     }

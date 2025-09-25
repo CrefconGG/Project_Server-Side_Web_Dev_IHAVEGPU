@@ -9,16 +9,24 @@ const userViewController = {
     getLoginView: (req, res) => {
         res.render('login');
     },
-    postLoginView: async (req, res) => {
-        console.log("Body received:", req.body);
+     postLoginView: async (req, res) => {
         try {
         const { identifier, password } = req.body;
+        const user = await userService.getByEmailOrUsername(identifier);
 
-        const user = await userService.getByEmailOrUsername(identifier); 
         if (!user) return res.render("login", { error: "User not found" });
 
         const match = await bcrypt.compare(password, user.password);
         if (!match) return res.render("login", { error: "Invalid password" });
+
+        const payload = { userId: user._id, name: user.name, role: user.role };
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "3d" });
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 3 * 24 * 60 * 60 * 1000 // 3 วัน
+        });
 
         res.redirect("/");
         } catch (err) {
@@ -39,6 +47,10 @@ const userViewController = {
         console.error(err);
         res.render("register", { error: "Something went wrong" });
         }
+    },
+    logout: (req, res) => {
+        res.clearCookie("token");
+        res.redirect("/login");
     }
 }
 

@@ -3,6 +3,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import router from './routes/router.js'
 import webRouter from './routes/webRouter.js'
+import cookieParser from "cookie-parser";
 
 const app = express()
 const port = 3000
@@ -28,6 +29,7 @@ await connect()
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json()); // To parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // To parse URL-encoded bodies
+app.use(cookieParser());
 
 app.use("/api", router)
 app.use(webRouter)
