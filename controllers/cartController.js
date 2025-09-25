@@ -3,7 +3,7 @@ import cartService from "../services/cartService.js";
 const cartController = {
   getCartByUserId: async (req, res) => {
     try {
-      const userID = req.user.userId;
+      const userID = req.user;
       const cart = await cartService.getCartByUserId(userID);
       if (!cart) {
         return res.status(200).json({ user: userID, items: [] });
@@ -16,7 +16,7 @@ const cartController = {
 
   addItem: async (req, res) => {
     try {
-      const userID = req.user.userId;
+      const userID = req.user;
       const { productID, quantity } = req.body;
       const cart = await cartService.addItem(userID, productID, quantity);
       res.status(200).json(cart);
@@ -27,7 +27,7 @@ const cartController = {
 
   removeItem: async (req, res) => {
     try {
-      const userID = req.user.userId;
+      const userID = req.user;
       const { productID } = req.params;
       const cart = await cartService.removeItem(userID, productID);
       res.status(200).json(cart);
@@ -38,7 +38,7 @@ const cartController = {
 
   updateItemQuantity: async (req, res) => {
     try {
-      const userID = req.user.userId;
+      const userID = req.user;
       const { productID } = req.params;
       const { quantity } = req.body;
       const cart = await cartService.updateItemQuantity(userID, productID, quantity);
@@ -50,7 +50,7 @@ const cartController = {
 
   clearCart: async (req, res) => {
     try {
-      const userID = req.user.userId;
+      const userID = req.user;
       const cart = await cartService.clearCart(userID);
       res.status(200).json(cart);
     } catch (err) {
