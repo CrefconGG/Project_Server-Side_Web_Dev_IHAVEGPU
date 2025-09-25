@@ -1,5 +1,5 @@
 import cartController from "../controllers/cartController.js";
-import authMiddleware from "../middlewares/authMiddleware.js"
+import authMiddleware from "../middlewares/apiMiddleware.js"
 
 const useCartRoute = async (router) => {
   router.get("/cart", authMiddleware(), cartController.getCartByUserId);
