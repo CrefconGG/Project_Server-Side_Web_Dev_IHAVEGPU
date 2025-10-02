@@ -20,7 +20,8 @@ const orderController = {
     },
     createOrder: async (req, res) => {
         try {
-            const { user, products, totalAmount, status } = req.body;
+            const user = req.user
+            const { products, totalAmount, status } = req.body;
             const order = await orderService.createOrder(user, products, totalAmount, status);
             res.status(201).json(order);
         } catch (err) {
