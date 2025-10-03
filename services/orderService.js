@@ -7,7 +7,13 @@ const orderService = {
     },
 
     getOrderById: async (id) => {
-        return await Order.findOne({ _id: id, isDeleted: false }).populate('user').populate('items.products');
+        return await Order.findOne({ _id: id, isDeleted: false }).populate('user').populate('items.product');
+    },
+    getOrderByUser: async(userId) => {
+        return await Order.find({ user: userId, isDeleted: false })
+            .select('items totalPrice status createdAt')
+            .populate('items.product', 'name price')
+            .sort({ createdAt: -1 });
     },
 
     // create order จาก cart
@@ -24,7 +30,8 @@ const orderService = {
             totalPrice += item.product.price * item.quantity;
             return {
                 product: item.product._id,
-                quantity: item.quantity
+                quantity: item.quantity,
+                price: item.product.price
             };
         });
 
@@ -44,7 +51,7 @@ const orderService = {
     },
 
     getOrderByUserId: async (user) => { 
-        return await Order.find({ user, isDeleted: false }).populate('user').populate('items.productsID');
+        return await Order.find({ user, isDeleted: false }).populate('user').populate('items.product');
     },
 
     updateOrderStatus: async (id, status) => {

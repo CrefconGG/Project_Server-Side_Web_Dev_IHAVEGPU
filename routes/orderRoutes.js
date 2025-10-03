@@ -1,15 +1,19 @@
 import orderController from '../controllers/orderController.js'
-import authMiddleware from "../middlewares/authMiddleware.js"
+import apiMiddleware from "../middlewares/apiMiddleware.js"
 
 const useOrderRoute = async (router) => {
-  router.get('/order',authMiddleware(), orderController.getAllOrders)
-  router.get('/order/:id',authMiddleware(), orderController.getOrderById)
-  router.post('/order',authMiddleware(), authMiddleware(),orderController.createOrder)
-  router.get('/order/user/:userID', orderController.getOrderByUserId)
-  router.put('/order/:id', authMiddleware(),orderController.updateOrderStatus)
-  router.delete('/order/:id', authMiddleware(),orderController.deleteOrder)
-  router.delete('/order/user/:userID', orderController.deleteOrdersByUserId)
-  router.patch('/order/:id', authMiddleware(),orderController.restoreOrder)
+  // USER ROUTES
+  router.post('/orders', apiMiddleware(), orderController.createOrder)       
+  router.get('/orders/user', apiMiddleware(), orderController.getOrderByUser) 
+
+  // ADMIN ROUTES
+  router.get('/orders/user/:id', apiMiddleware(['admin']), orderController.getOrderByUserId)
+  router.get('/orders', apiMiddleware(['admin']), orderController.getAllOrders) 
+  router.get('/orders/:id', apiMiddleware(['admin']), orderController.getOrderById) 
+  router.patch('/orders/:id/status', apiMiddleware(['admin']), orderController.updateOrderStatus) 
+  router.delete('/orders/:id', apiMiddleware(['admin']), orderController.deleteOrder) 
+  router.delete('/orders/user/:userID', apiMiddleware(['admin']), orderController.deleteOrdersByUserId) 
+  router.patch('/orders/:id/restore', apiMiddleware(['admin']), orderController.restoreOrder) 
 }
 
 export default useOrderRoute

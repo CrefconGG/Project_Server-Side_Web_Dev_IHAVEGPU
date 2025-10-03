@@ -11,7 +11,7 @@ const orderController = {
     },
     getOrderById: async (req, res) => {
         try {
-            const id = req.params.id;
+            const id = req.params.OrderId;
             const order = await orderService.getOrderById(id);
             res.status(200).json(order);
         } catch (err) {
@@ -21,8 +21,7 @@ const orderController = {
     createOrder: async (req, res) => {
         try {
             const user = req.user
-            const { products, totalAmount, status } = req.body;
-            const order = await orderService.createOrder(user, products, totalAmount, status);
+            const order = await orderService.createOrder(user);
             res.status(201).json(order);
         } catch (err) {
             res.status(500).json(err);
@@ -30,8 +29,18 @@ const orderController = {
     },
     getOrderByUserId: async (req, res) => {
         try {
-            const user = req.params.userID;
-            const orders = await orderService.oderByUserId(user);
+            const user = req.params.id;
+            const orders = await orderService.getOrderByUserId(user);
+            res.status(200).json(orders);
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    },
+    //user get their orders
+    getOrderByUser: async (req, res) => {
+        try {
+            const user = req.user;
+            const orders = await orderService.getOrderByUser(user);
             res.status(200).json(orders);
         } catch (err) {
             res.status(500).json(err);
@@ -39,7 +48,7 @@ const orderController = {
     },
     updateOrderStatus: async (req, res) => {
         try {
-            const id = req.params.id;
+            const id = req.params.id
             const { status } = req.body;
             const updatedOrder = await orderService.updateOrderStatus(id, status);
             res.status(200).json(updatedOrder);
