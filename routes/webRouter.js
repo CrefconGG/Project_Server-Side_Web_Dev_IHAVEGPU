@@ -1,12 +1,12 @@
 import express from 'express'
-import productController from "../controllers/productController.js"
+import productViewController from '../controllers/productViewController.js'
 import userViewController from '../controllers/userViewController.js'
 import authMiddleware from '../middlewares/authMiddleware.js'
 
 const router = express.Router()
 
-router.get('/', authMiddleware({ optional: true }), productController.getProductView);
-router.get('/products/:id', authMiddleware({ optional: true }), productController.getDetailsView);
+router.get('/', authMiddleware({ optional: true }), productViewController.getProductView);
+router.get('/products/:id', authMiddleware({ optional: true }), productViewController.getDetailsView);
 router.get('/login', userViewController.getLoginView);
 router.post('/login', userViewController.postLoginView);
 router.get('/register', userViewController.getRegisterView);

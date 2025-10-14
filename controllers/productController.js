@@ -54,26 +54,6 @@ const productController = {
         }catch(err){
             res.status(500).json(err)
         }
-    },
-    getProductView: async (req, res) => {
-        try {
-            const products = await productService.getAllProducts();
-            res.render("listproducts", { //render products with user object
-            products,
-            user: req.user || null 
-        });
-        } catch (err) {
-            res.status(500).json(err);
-        }
-    },
-    getDetailsView: async (req, res) => {
-        try {
-            const id = req.params.id;
-            const product = await productService.getProductsByID(id);
-            res.render('showProduct', { product }); // Render EJS view with product details
-        } catch (err) {
-            res.status(500).json(err);
-        }
     }
 }
 

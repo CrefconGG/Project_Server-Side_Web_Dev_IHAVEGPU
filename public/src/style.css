@@ -15,10 +15,12 @@ body {
   align-items: center;
   padding: 10px 20px;
 }
+
 .navbar .logo {
   font-size: 20px;
   font-weight: bold;
 }
+
 .navbar .profile a {
   color: lightblue;
   margin-left: 15px;
@@ -54,13 +56,13 @@ body {
   border-radius: 12px;
   padding: 20px;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .product-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 /* Product image */
@@ -112,6 +114,45 @@ body {
   transition: background 0.2s ease;
 }
 
+
+/* Search and Pagination */
 .product-card button:hover {
   background-color: #21867a;
+}
+
+.search-form {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.search-form input[type="text"] {
+  width: 1000px;
+  padding: 8px;
+}
+
+.search-form select,
+.search-form button {
+  padding: 8px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 5px;
+}
+
+.pagination a,
+.pagination strong {
+  padding: 5px 10px;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.pagination strong {
+  background-color: #333;
+  color: white;
 }

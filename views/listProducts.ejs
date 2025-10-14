@@ -1,5 +1,5 @@
-<%-include('index.ejs')%>
-    <title>Product List</title>
+<%- include('index.ejs') %>
+<title>Product List</title>
 </head>
 <body>
     <div class="navbar">
@@ -13,8 +13,31 @@
         <% } %>
         </div>
     </div>
+
     <div class="container">
         <h1>Product List</h1>
+
+        <form method="get" action="/" class="search-form">
+            <input type="text" name="search" value="<%= search %>" placeholder="Search products..." />
+            <!-- Category -->
+            <select name="category">
+                <option value="">All Categories</option>
+                <% if (categories) { categories.forEach(function(cat) { %>
+                    <option value="<%= cat %>" <%= currentCategory === cat ? 'selected' : '' %>><%= cat %></option>
+                <% }) } %>
+            </select>
+
+            <!-- Sort -->
+            <select name="sort">
+                <option value="">Sort by: Relevance</option>
+                <option value="priceAsc" <%= sort === 'priceAsc' ? 'selected' : '' %>>Sort by Price(Low to High)</option>
+                <option value="priceDesc" <%= sort === 'priceDesc' ? 'selected' : '' %>>Sort by Price(High to Low)</option>
+            </select>
+
+            <button type="submit">Search</button>
+        </form>
+
+
         <div class="product-list">
             <% if (products && products.length > 0) { %>
                 <% products.forEach(function(product) { %>
@@ -31,6 +54,35 @@
                 <% }); %>
             <% } else { %>
                 <p>No products found.</p>
+            <% } %>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <% 
+            const maxPagesToShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+            let endPage = startPage + maxPagesToShow - 1;
+            if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+            %>
+
+            <% if (currentPage > 1) { %>
+                <a href="?search=<%= search %>&category=<%= currentCategory %>&sort=<%= sort %>&page=<%= currentPage - 1 %>">&lt;</a>
+            <% } %>
+
+            <% for (let i = startPage; i <= endPage; i++) { %>
+                <% if (i === currentPage) { %>
+                    <strong><%= i %></strong>
+                <% } else { %>
+                    <a href="?search=<%= search %>&category=<%= currentCategory %>&sort=<%= sort %>&page=<%= i %>"><%= i %></a>
+                <% } %>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+                <a href="?search=<%= search %>&category=<%= currentCategory %>&sort=<%= sort %>&page=<%= currentPage + 1 %>">&gt;</a>
             <% } %>
         </div>
     </div>
