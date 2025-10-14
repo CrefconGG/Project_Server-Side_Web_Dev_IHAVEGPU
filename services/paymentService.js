@@ -19,7 +19,7 @@ const paymentService = {
       paidAt: new Date(),
     };
 
-    order.status = "completed";
+    order.status = "paid";
     order.paymentInfo = paymentResult;
     await order.save();
 

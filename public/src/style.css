@@ -394,3 +394,145 @@ button[style*="#d9534f"] {
 button[style*="#d9534f"]:hover {
   background-color: #c9302c;
 }
+
+
+/* =================order & payment ================= */
+/* ===Table=== */
+table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* ===Order Status Colors=== */
+.status {
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-align: center;
+    color: rgb(0, 0, 0);
+}
+
+/* ====Buttons ==== */
+button, .pay-btn, .update-status-form button {
+    border: none;
+    padding: 6px 12px;
+    margin: 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+/* Update button (for admins) */
+.update-status-form button {
+    background-color: #4CAF50; /* green */
+    color: white;
+}
+
+.update-status-form button:hover {
+    background-color: #45a049;
+}
+
+/* Delete button */
+.delete-btn {
+    background-color: #f44336; /* red */
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #da190b;
+}
+
+/* Pay button */
+.pay-btn {
+    background-color: #008CBA; /* blue */
+    color: white;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+}
+
+.pay-btn:hover {
+    background-color: #007bb5;
+}
+
+/* Payment popup buttons */
+#confirm-payment {
+    background-color: #4CAF50; /* green */
+    color: white;
+    padding: 8px 16px;
+    margin: 5px;
+}
+
+#confirm-payment:hover {
+    background-color: #45a049;
+}
+
+#cancel-payment {
+    background-color: #f44336; /* red */
+    color: white;
+    padding: 8px 16px;
+    margin: 5px;
+}
+
+#cancel-payment:hover {
+    background-color: #da190b;
+}
+
+/* ===Popup Overlay=== */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 320px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.popup-content h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.qr-image {
+    width: 180px;
+    height: 180px;
+    margin: 10px 0;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+}
+
+/* ==== Responsive Table ==== */
+@media (max-width: 768px) {
+    table, th, td {
+        font-size: 14px;
+    }
+
+    .pay-btn, .update-status-form button, .delete-btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}

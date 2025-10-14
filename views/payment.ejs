@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment</title>
+  <link rel="stylesheet" href="/src/style.css">
+  <style>
+    .payment-container {
+      text-align: center;
+      margin-top: 50px;
+    }
+    .qr-box {
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      width: 300px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    .qr-box img {
+      width: 250px;
+      height: 250px;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo">I HAVE GPU</div>
+    <div class="profile">
+      <% if (user) { %>
+        <a href="/logout">Logout</a>
+      <% } else { %>
+        <a href="/login">Login</a>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="payment-container">
+    <h1>ชำระเงินสำหรับออเดอร์</h1>
+    <h3>Order ID: <%= order._id %></h3>
+    <p>ยอดชำระทั้งหมด: <b><%= order.totalPrice %> ฿</b></p>
+
+    <div class="qr-box">
+      <img src="/images/qr_mock.png" alt="QR Code">
+      <p>สแกนเพื่อชำระเงิน</p>
+    </div>
+
+    <button id="finishPayment" class="btn">ชำระเสร็จสิ้น</button>
+    <br><br>
+    <a href="/orders">ย้อนกลับ</a>
+  </div>
+
+  <script>
+    document.getElementById('finishPayment').addEventListener('click', async () => {
+      if(!confirm('ยืนยันว่าชำระเงินเสร็จสิ้นแล้ว?')) return;
+
+      const orderId = "<%= order._id %>";
+
+      try {
+        const res = await fetch(`/payments/${orderId}/pay`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ paymentMethod: 'qr' })
+        });
+
+        const data = await res.json();
+        if(res.ok){
+          alert('ชำระเงินสำเร็จ!');
+          window.location.href = '/orders';
+        } else {
+          alert('ผิดพลาด: ' + data.message);
+        }
+      } catch (err) {
+        console.error(err);
+        alert('เกิดข้อผิดพลาดในการชำระเงิน');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Orders</title>
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">I HAVE GPU</div>
+        <div class="profile">
+        <% if (user) { %>
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/login">Login</a>
+        <% } %>
+        </div>
+    </div>
+
+  <h1><%= user.role === 'admin' ? 'All Orders' : 'My Orders' %></h1>
+
+  <% if (orders.length === 0) { %>
+    <p>No orders found.</p>
+  <% } else { %>
+    <table border="1" cellpadding="10">
+      <tr>
+        <th>Order ID</th>
+        <% if(user.role === 'admin'){ %>
+          <th>User</th>
+        <% } %>
+        <th>Total Price</th>
+        <th>Status</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+
+      <% orders.forEach(order => { %>
+        <tr>
+          <td><%= order._id %></td>
+          <% if(user.role === 'admin'){ %>
+            <td><%= order.user.name %> (<%= order.user.email %>)</td>
+          <% } %>
+          <td><%= order.totalPrice %> ฿</td>
+          <td class="status"><%= order.status %></td>
+          <td><%= new Date(order.createdAt).toLocaleString() %></td>
+          <td>
+            <a href="<%= user.role === 'admin' ? '/orders/' + order._id : '/orders/' + order._id %>">View</a>
+
+            <% if(user.role === 'admin'){ %>
+              <!-- Update status -->
+              <form class="update-status-form" data-id="<%= order._id %>" style="display:inline">
+                <select name="status">
+                  <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                  <option value="paid" <%= order.status === 'paid' ? 'selected' : '' %>>Paid</option>
+                  <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                </select>
+                <button type="submit">Update</button>
+              </form>
+
+              <!-- Delete-->
+              <button class="delete-btn" data-id="<%= order._id %>">Delete</button>
+            <% } %>
+
+            <% if(user.role === 'user'){ %>
+                <% if(order.status === 'pending'){ %>
+                    <button class="pay-btn" data-id="<%= order._id %>">Pay</a>
+                <% } %>
+                <button class="delete-btn" data-id="<%= order._id %>">Delete</button>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </table>
+  <% } %>
+
+  <!-- Payment Popup -->
+  <div id="payment-popup" class="popup-overlay" style="display:none;">
+    <div class="popup-content">
+      <h2>Payment</h2>
+      <p>Scan the QR code to pay</p>
+      <img src="/images/qrcode.png" alt="QR Code" class="qr-image">
+      <br>
+      <button id="confirm-payment">Complete Payment</button>
+      <button id="cancel-payment">Cancel</button>
+    </div>
+  </div>
+
+<script>
+  // ================= Update Status =================
+  document.querySelectorAll('.update-status-form').forEach(form => {
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const status = form.querySelector('select[name="status"]').value;
+      const orderId = form.dataset.id.trim();
+
+      try {
+        const res = await fetch(`/orders/${orderId}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ status })
+        });
+        if(res.ok){
+          alert('Status updated!');
+          location.reload();
+        } else {
+          const data = await res.json();
+          alert('Failed: ' + (data.message || res.statusText));
+        }
+      } catch(err){
+        console.error(err);
+        alert('Error updating status');
+      }
+    });
+  });
+
+  // ================= Delete Order =================
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', async e => {
+      const orderId = btn.dataset.id.trim();
+      if(!confirm('Are you sure you want to delete this order?')) return;
+
+      try {
+        const res = await fetch(`/orders/${orderId}`, { 
+          method: 'DELETE',
+          credentials: 'same-origin'
+        });
+        if(res.ok){
+          alert('Order deleted!');
+          location.reload();
+        } else {
+          const data = await res.json();
+          alert('Failed: ' + (data.message || res.statusText));
+        }
+      } catch(err){
+        console.error(err);
+        alert('Error deleting order');
+      }
+    });
+  });
+
+  // ================= Payment Popup =================
+  let currentOrderId = null;
+
+  document.querySelectorAll('.pay-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      currentOrderId = btn.dataset.id.trim();
+      document.getElementById('payment-popup').style.display = 'flex';
+    });
+  });
+
+  document.getElementById('cancel-payment').addEventListener('click', () => {
+    document.getElementById('payment-popup').style.display = 'none';
+    currentOrderId = null;
+  });
+
+  document.getElementById('confirm-payment').addEventListener('click', async () => {
+    if (!currentOrderId) return;
+
+    try {
+      const res = await fetch(`/payments/${currentOrderId}/pay`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ paymentMethod: 'QR' })
+      });
+
+      if (res.ok) {
+        alert('Payment successful!');
+        document.getElementById('payment-popup').style.display = 'none';
+        location.reload();
+      } else {
+        const data = await res.json();
+        alert('Payment failed: ' + (data.message || res.statusText));
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error processing payment');
+    }
+  });
+
+</script>
+<a href="/">Back to Products</a>
+</body>
+</html>

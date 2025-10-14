@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Details</title>
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">I HAVE GPU</div>
+        <div class="profile">
+        <% if (user) { %>
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/login">Login</a>
+        <% } %>
+        </div>
+    </div>
+  <h1>Order Details</h1>
+
+  <p><strong>Order ID:</strong> <%= order._id %></p>
+  <p><strong>Status:</strong> <%= order.status %></p>
+  <p><strong>Total Price:</strong> <%= order.totalPrice %> ฿</p>
+  <p><strong>Created At:</strong> <%= new Date(order.createdAt).toLocaleString() %></p>
+
+  <% if(user.role === 'admin'){ %>
+    <p><strong>User:</strong> <%= order.user.name %> (<%= order.user.email %>)</p>
+  <% } %>
+
+  <h2>Items</h2>
+  <ul>
+    <% order.items.forEach(item => { %>
+      <li>
+        <strong><%= item.product.name %></strong> — 
+        <%= item.quantity %> × <%= item.price %> ฿
+      </li>
+    <% }) %>
+  </ul>
+
+  <!-- Back button -->
+  <a href="<%= user.role === 'admin' ? '/admin/orders' : '/orders' %>">Back to Orders</a>
+</body>
+</html>
