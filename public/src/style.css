@@ -368,3 +368,29 @@ body {
 .register-page .form-container a[href="/"]:hover {
   color: #333;
 }
+
+/* Cart page */
+.cart-summary {
+  text-align: right;
+  margin-top: 30px;
+}
+
+button {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  font-weight: bold;
+}
+
+button[style*="#d9534f"] {
+  background-color: #d9534f; /* ปุ่ม remove */
+}
+
+button[style*="#d9534f"]:hover {
+  background-color: #c9302c;
+}

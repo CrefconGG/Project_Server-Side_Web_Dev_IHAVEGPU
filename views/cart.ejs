@@ -1,0 +1,57 @@
+<%- include('index.ejs') %>
+    <title>My Cart</title>
+    </head>
+
+    <body>
+        <div class="navbar">
+            <div class="logo">I HAVE GPU</div>
+            <div class="profile">
+                <% if (user) { %>
+                    <span>Welcome, <%= user.role %>
+                            <%= user.name %></span>
+                    <a href="/logout">Logout</a>
+                    <% } else { %>
+                        <a href="/login">Login</a>
+                        <% } %>
+            </div>
+        </div>
+
+         <div class="container">
+    <h1>Your Shopping Cart</h1>
+
+    <% if (items.length === 0) { %>
+      <p style="text-align:center; margin-top:40px;">
+        Your cart is empty.
+        <a href="/" style="color:#2a9d8f; text-decoration:none;">Start Shopping</a>
+      </p>
+    <% } else { %>
+      <div class="product-list">
+        <% items.forEach(item => { %>
+          <div class="product-card">
+            <img src="<%= item.image %>" alt="<%= item.name %>">
+            <h2><%= item.name %></h2>
+            <p><strong>$<%= item.price.toFixed(2) %></strong></p>
+
+            <p>Quantity: <%= item.quantity %></p>
+            <p>Subtotal: <strong>$<%= item.subtotal.toFixed(2) %></strong></p>
+
+            <!-- ปุ่มลบ -->
+            <form action="/cart/api/<%= item.id %>?_method=DELETE" method="POST" style="margin-top:10px;">
+              <button type="submit" style="background-color:#d9534f;">Remove</button>
+            </form>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- สรุปยอดรวม -->
+      <div style="text-align:right; margin-top:30px;">
+        <h2>Total: $<%= total.toFixed(2) %></h2>
+
+        <form action="/order/create" method="POST" style="margin-top:10px;">
+          <button type="submit" style="background-color:#2a9d8f;">Checkout</button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>
