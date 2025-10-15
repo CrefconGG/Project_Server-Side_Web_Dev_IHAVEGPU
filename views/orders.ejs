@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Orders</title>
-  <link rel="stylesheet" href="/src/style.css">
+  <link rel="stylesheet" href="/src/orders.css">
 </head>
 <body>
     <div class="navbar">
@@ -17,63 +17,68 @@
         </div>
     </div>
 
+   <!-- ===== Heading ===== -->
   <h1><%= user.role === 'admin' ? 'All Orders' : 'My Orders' %></h1>
 
+  <!-- ===== Orders Table ===== -->
   <% if (orders.length === 0) { %>
-    <p>No orders found.</p>
+    <p style="text-align:center; margin-top:30px;">No orders found.</p>
   <% } else { %>
-    <table border="1" cellpadding="10">
-      <tr>
-        <th>Order ID</th>
-        <% if(user.role === 'admin'){ %>
-          <th>User</th>
-        <% } %>
-        <th>Total Price</th>
-        <th>Status</th>
-        <th>Created At</th>
-        <th>Actions</th>
-      </tr>
-
-      <% orders.forEach(order => { %>
+    <table>
+      <thead>
         <tr>
-          <td><%= order._id %></td>
+          <th>Order ID</th>
           <% if(user.role === 'admin'){ %>
-            <td><%= order.user.name %> (<%= order.user.email %>)</td>
+            <th>User</th>
           <% } %>
-          <td><%= order.totalPrice %> ฿</td>
-          <td class="status"><%= order.status %></td>
-          <td><%= new Date(order.createdAt).toLocaleString() %></td>
-          <td>
-            <a href="<%= user.role === 'admin' ? '/orders/' + order._id : '/orders/' + order._id %>">View</a>
-
-            <% if(user.role === 'admin'){ %>
-              <!-- Update status -->
-              <form class="update-status-form" data-id="<%= order._id %>" style="display:inline">
-                <select name="status">
-                  <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
-                  <option value="paid" <%= order.status === 'paid' ? 'selected' : '' %>>Paid</option>
-                  <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
-                </select>
-                <button type="submit">Update</button>
-              </form>
-
-              <!-- Delete-->
-              <button class="delete-btn" data-id="<%= order._id %>">Delete</button>
-            <% } %>
-
-            <% if(user.role === 'user'){ %>
-                <% if(order.status === 'pending'){ %>
-                    <button class="pay-btn" data-id="<%= order._id %>">Pay</a>
-                <% } %>
-                <button class="delete-btn" data-id="<%= order._id %>">Delete</button>
-            <% } %>
-          </td>
+          <th>Total Price</th>
+          <th>Status</th>
+          <th>Created At</th>
+          <th>Actions</th>
         </tr>
-      <% }) %>
+      </thead>
+      <tbody>
+        <% orders.forEach(order => { %>
+          <tr>
+            <td><%= order._id %></td>
+            <% if(user.role === 'admin'){ %>
+              <td><%= order.user.name %> (<%= order.user.email %>)</td>
+            <% } %>
+            <td><%= order.totalPrice %> ฿</td>
+            <td class="status <%= order.status %>"><%= order.status %></td>
+            <td><%= new Date(order.createdAt).toLocaleString() %></td>
+            <td>
+              <a class="update-status-btn" href="<%= '/orders/' + order._id %>">View</a>
+
+              <% if(user.role === 'admin'){ %>
+                <!-- Update status -->
+                <form class="update-status-form" data-id="<%= order._id %>" style="display:inline">
+                  <select name="status">
+                    <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                    <option value="paid" <%= order.status === 'paid' ? 'selected' : '' %>>Paid</option>
+                    <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                  </select>
+                  <button type="submit">Update</button>
+                </form>
+
+                <!-- Delete -->
+                <button class="delete-btn" data-id="<%= order._id %>">Delete</button>
+              <% } %>
+
+              <% if(user.role === 'user'){ %>
+                  <% if(order.status === 'pending'){ %>
+                      <button class="pay-btn" data-id="<%= order._id %>">Pay</button>
+                  <% } %>
+                  <button class="delete-btn" data-id="<%= order._id %>">Delete</button>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
     </table>
   <% } %>
 
-  <!-- Payment Popup -->
+  <!-- ===== Payment Popup ===== -->
   <div id="payment-popup" class="popup-overlay" style="display:none;">
     <div class="popup-content">
       <h2>Payment</h2>

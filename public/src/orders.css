@@ -1,0 +1,192 @@
+/* ===== Global ===== */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f6f8;
+  color: #333;
+}
+
+a {
+  text-decoration: none;
+  color: #3498db;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+
+/* Navbar */
+.navbar {
+  background: #000000;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.navbar .logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.navbar .profile a {
+  color: lightblue;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+/* ===== Heading ===== */
+h1 {
+  text-align: center;
+  margin: 30px 0 20px;
+  color: #2c3e50;
+}
+
+/* ===== Table ===== */
+table {
+  width: 90%;
+  margin: 0 auto 40px;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+th {
+  background-color: #3498db;
+  color: white;
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+.status {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status.pending {
+  color: #f39c12;
+}
+
+.status.paid {
+  color: #27ae60;
+}
+
+.status.cancelled {
+  color: #e74c3c;
+}
+
+/* ===== Buttons ===== */
+button, .pay-btn {
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  margin: 2px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+button.update-status-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+button.update-status-btn:hover {
+  background-color: #2980b9;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.pay-btn {
+  background-color: #27ae60;
+  color: white;
+}
+
+.pay-btn:hover {
+  background-color: #219150;
+}
+
+/* ===== Payment Popup ===== */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 320px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.popup-content h2 {
+  margin-bottom: 15px;
+}
+
+.popup-content p {
+  margin-bottom: 20px;
+}
+
+.popup-content .qr-image {
+  width: 180px;
+  height: 180px;
+  margin-bottom: 20px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+}
+
+.popup-content button {
+  margin: 5px;
+}
+
+/* ===== Responsive ===== */
+@media screen and (max-width: 768px) {
+  table, th, td {
+    font-size: 0.85rem;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar .profile {
+    margin-top: 10px;
+  }
+}
