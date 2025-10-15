@@ -1,5 +1,5 @@
 import cartService from "../services/cartService.js";
-import cartController from "./cartController.js";
+
 const cartViewController = {
   getCartView: async (req, res) => {
     try {
@@ -15,7 +15,7 @@ const cartViewController = {
       const items = cart.items.map(item => ({
         id: item.product._id,
         name: item.product.name,
-        image: item.product.imagesURL?.[0],
+        image: item.product.imagesURL,
         price: item.product.price,
         quantity: item.quantity,
         subtotal: item.quantity * item.product.price,
