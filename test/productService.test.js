@@ -33,7 +33,7 @@ describe("Product Service Unit Test", () => {
     expect(result).toEqual(mockProduct);
   });
 
-  it("createProducts → ควรสร้างสินค้าใหม่", async () => {
+  it("createProducts → create new product", async () => {
     const mockProduct = { _id: "1", name: "RTX9070" };
     Product.create.mockResolvedValue(mockProduct);
 
