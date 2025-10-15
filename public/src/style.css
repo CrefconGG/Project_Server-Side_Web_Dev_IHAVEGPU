@@ -132,8 +132,12 @@ body {
   padding: 8px;
 }
 
-.search-form select,
+.search-form select {
+  padding: 8px;
+}
+
 .search-form button {
+  background-color: #c9302c;
   padding: 8px;
 }
 
