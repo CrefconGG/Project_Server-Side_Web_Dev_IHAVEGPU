@@ -1,5 +1,5 @@
 import productController from "../controllers/productController.js";
-import authMiddleware from "../middlewares/authMiddleware.js";
+import authMiddleware from "../middlewares/apiMiddleware.js";
 
 /**
  * @swagger
@@ -181,12 +181,12 @@ import authMiddleware from "../middlewares/authMiddleware.js";
  */
 
 const useProductRoute = (router) => {
-  router.get('/products', productController.getAllProducts);
-  router.get('/products/:id', productController.getProductsById);
-  router.post('/products', authMiddleware("admin"), productController.createProducts);
-  router.put('/products/:id', authMiddleware("admin"), productController.updateProducts);
-  router.delete('/products/:id', authMiddleware("admin"), productController.deleteProducts);
-  router.patch('/products/:id', authMiddleware("admin"), productController.restoreProducts);
+  router.get('/products', authMiddleware({ requiredRole: "admin" }), productController.getAllProducts);
+  router.get('/products/:id', authMiddleware({ requiredRole: "admin" }), productController.getProductsById);
+  router.post('/products', authMiddleware({ requiredRole: "admin" }), productController.createProducts);
+  router.put('/products/:id', authMiddleware({ requiredRole: "admin" }), productController.updateProducts);
+  router.delete('/products/:id', authMiddleware({ requiredRole: "admin" }), productController.deleteProducts);
+  router.patch('/products/:id', authMiddleware({ requiredRole: "admin" }), productController.restoreProducts);
 };
 
 export default useProductRoute;
