@@ -10,12 +10,17 @@ const router = express.Router()
 
 router.get('/', authMiddleware({ optional: true }), productViewController.getProductView);
 router.get('/products/:id', authMiddleware({ optional: true }), productViewController.getDetailsView);
-router.get("/cart", authMiddleware({ optional: false }), cartViewController.getCartView);
 router.get('/login', userViewController.getLoginView);
 router.post('/login', userViewController.postLoginView);
 router.get('/register', userViewController.getRegisterView);
 router.post('/register', userViewController.postRegisterView);
 router.get('/logout', userViewController.logout);
+
+router.get("/cart", authMiddleware(), cartViewController.getCartView);
+router.post("/cart/items", authMiddleware(), cartViewController.addItemView);
+router.delete("/cart/items/:productID", authMiddleware(), cartViewController.removeItemView);
+router.put("/cart/items/:productID", authMiddleware(), cartViewController.updateItemQuantityView);
+router.delete("/cart", authMiddleware(), cartViewController.clearCartView);
 
 router.get('/orders', authMiddleware(), orderViewController.getUserOrdersView);
 router.get('/orders/:id', authMiddleware(), orderViewController.getOrderDetailsView);
