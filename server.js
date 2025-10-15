@@ -40,7 +40,9 @@ app.use(webRouter)
 // Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-  console.log("Swagger: http://localhost:3000/api-docs");
-})
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
+    console.log(`Swagger: http://localhost:${port}/api-docs`);
+  });
+}
