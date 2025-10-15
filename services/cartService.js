@@ -16,9 +16,9 @@ const cartService = {
     );
 
     if (itemIndex > -1) {
-      cart.items[itemIndex].quantity += quantity;
+      cart.items[itemIndex].quantity += Number(quantity);
     } else {
-      cart.items.push({ product: productId, quantity });
+      cart.items.push({ product: productId, quantity: Number(quantity) });
     }
 
     return await cart.save();
