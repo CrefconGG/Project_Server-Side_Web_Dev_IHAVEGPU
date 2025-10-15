@@ -4,13 +4,14 @@ import mongoose from 'mongoose'
 import router from './routes/router.js'
 import webRouter from './routes/webRouter.js'
 import cookieParser from "cookie-parser";
+import path from 'path'
 
 const app = express()
 const port = 3000
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set('views', path.resolve('./views'));
 app.use(express.static('public'));
 
 dotenv.config()
