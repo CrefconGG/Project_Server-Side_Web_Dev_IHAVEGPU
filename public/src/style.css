@@ -540,3 +540,81 @@ button, .pay-btn, .update-status-form button {
         font-size: 12px;
     }
 }
+
+/* ===== Order Details ===== */
+.order-details {
+  max-width: 700px;
+  margin: 40px auto;
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.order-details h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2c3e50;
+}
+
+.order-details p {
+  font-size: 1rem;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.order-details h2 {
+  margin-top: 25px;
+  margin-bottom: 15px;
+  color: #3498db;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 5px;
+}
+
+.order-details ul {
+  list-style: none;
+  padding: 0;
+}
+
+.order-details ul li {
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background-color: #f4f6f8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+}
+
+.order-details ul li strong {
+  color: #2c3e50;
+}
+
+/* ===== Back Button ===== */
+.order-details a {
+  display: inline-block;
+  margin-top: 25px;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.order-details a:hover {
+  background-color: #2980b9;
+}
+
+/* ===== Responsive ===== */
+@media screen and (max-width: 768px) {
+  .order-details {
+    padding: 20px;
+    margin: 20px 15px;
+  }
+
+  .order-details ul li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

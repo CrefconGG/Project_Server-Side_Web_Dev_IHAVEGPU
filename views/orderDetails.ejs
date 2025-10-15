@@ -3,19 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <title>Order Details</title>
-  <link rel="stylesheet" href="/src/orderdetails.css">
+  <link rel="stylesheet" href="/src/style.css">
 </head>
 <body>
     <div class="navbar">
         <%- include('nav.ejs') %>
         <div class="profile">
         <% if (user) { %>
+            <span>Welcome, <%= user.role %> <%= user.name %></span>
+            <a href="/cart">My Cart</a>
+            <% if (user.role === 'admin') { %>
+                <a href="/admin/orders">All Orders</a>
+            <% } else { %>
+                <a href="/orders">My Orders</a>
+            <% } %>
             <a href="/logout">Logout</a>
         <% } else { %>
             <a href="/login">Login</a>
         <% } %>
         </div>
     </div>
+    
    <div class="order-details">
     <h1>Order Details</h1>
 
