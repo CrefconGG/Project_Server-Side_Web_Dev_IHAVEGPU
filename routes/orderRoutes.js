@@ -3,8 +3,8 @@ import authMiddleware from "../middlewares/apiMiddleware.js"
 
 const useOrderRoute = async (router) => {
   // USER ROUTES
-  router.post('/orders', authMiddleware({ allowedRoles: ["admin"] }), orderController.createOrder)       
-  router.get('/orders/user', authMiddleware({ allowedRoles: ["admin"] }), orderController.getOrderByUser) 
+  router.post('/orders', authMiddleware(), orderController.createOrder)       
+  router.get('/orders/user', authMiddleware(), orderController.getOrderByUser) 
 
   // ADMIN ROUTES
   router.get('/orders/user/:id', authMiddleware({ allowedRoles: ["admin"] }), orderController.getOrderByUserId)

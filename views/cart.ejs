@@ -39,11 +39,16 @@
                 </h2>
                 <p><strong>$<%= product.price.toFixed(2) %></strong></p>
 
-                <p>Quantity: <%= product.quantity %>
-                </p>
+                <!-- ปรับจำนวนสินค้า -->
+                <div style="margin:10px 0;">
+                  <label>Quantity:</label>
+                  <input type="number" class="qty-input" data-id="<%= product.id %>" value="<%= product.quantity %>"
+                    min="1" style="width:60px; text-align:center;">
+                </div>
+
                 <p>Subtotal: <strong>$<%= product.subtotal.toFixed(2) %></strong></p>
 
-                <!-- ปุ่มลบ (ใช้ fetch DELETE) -->
+                <!-- ปุ่ม Remove -->
                 <button class="remove-btn" data-id="<%= product.id %>"
                   style="background-color:#d9534f; margin-top:10px;">
                   Remove
@@ -57,34 +62,37 @@
             <h2>Total: $<%= total.toFixed(2) %>
             </h2>
 
-            <form action="/order/create" method="POST" style="margin-top:10px;">
-              <button type="submit" style="background-color:#2a9d8f;">Checkout</button>
-            </form>
+            <!-- ปุ่ม Clear Cart -->
+            <button id="clearCartBtn" style="background-color:#555; margin-top:10px;">Clear Cart</button>
+
+            <!-- ปุ่ม Checkout -->
+            <button id="checkoutBtn" style="background-color:#2a9d8f; margin-left:10px;">
+              Checkout
+            </button>
           </div>
           <% } %>
     </div>
 
-    <!-- ✅ Script ส่วนจัดการ Remove -->
+    <!-- ✅ Script ส่วนควบคุม -->
     <script>
+      // 🗑️ Remove item
       document.querySelectorAll(".remove-btn").forEach(btn => {
         btn.addEventListener("click", async () => {
           const productID = btn.getAttribute("data-id");
-
           if (!confirm("Remove this item from cart?")) return;
 
           try {
             const res = await fetch(`/api/cart/items/${productID}`, {
               method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-              credentials: 'include' // ✅ ส่ง cookie ไปด้วย
+              headers: { "Content-Type": "application/json" }
             });
 
             if (res.ok) {
-              alert("🗑️ Item removed from cart!");
+              alert("🗑️ Item removed!");
               location.reload();
             } else {
               const err = await res.json();
-              alert("❌ Failed to remove: " + (err.message || res.statusText));
+              alert("❌ " + (err.error || res.statusText));
             }
           } catch (error) {
             console.error(error);
@@ -93,6 +101,84 @@
         });
       });
 
+      // 🔁 Update quantity
+      document.querySelectorAll(".qty-input").forEach(input => {
+        input.addEventListener("change", async () => {
+          const productID = input.getAttribute("data-id");
+          const quantity = parseInt(input.value);
+
+          if (isNaN(quantity) || quantity < 1) {
+            alert("⚠️ Quantity must be at least 1");
+            input.value = 1;
+            return;
+          }
+
+          try {
+            const res = await fetch(`/api/cart/items/${productID}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ quantity })
+            });
+
+            if (res.ok) {
+              location.reload();
+            } else {
+              const err = await res.json();
+              alert("❌ " + (err.error || res.statusText));
+            }
+          } catch (error) {
+            console.error(error);
+            alert("⚠️ Error updating quantity");
+          }
+        });
+      });
+
+      // 🧹 Clear cart
+      document.getElementById("clearCartBtn")?.addEventListener("click", async () => {
+        if (!confirm("Clear all items in your cart?")) return;
+
+        try {
+          const res = await fetch(`/api/cart`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" }
+          });
+
+          if (res.ok) {
+            alert("🧺 Cart cleared!");
+            location.reload();
+          } else {
+            const err = await res.json();
+            alert("❌ " + (err.error || res.statusText));
+          }
+        } catch (error) {
+          console.error(error);
+          alert("⚠️ Error clearing cart");
+        }
+      });
+
+      // 💳 Checkout - create order
+      document.getElementById("checkoutBtn")?.addEventListener("click", async () => {
+        if (!confirm("Proceed to checkout?")) return;
+
+        try {
+          const res = await fetch(`/api/orders`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            alert("✅ Order created successfully!");
+            window.location.href = "/orders"; // ไปหน้ารายการ order
+          } else {
+            alert("❌ " + (data.message || "Failed to create order"));
+          }
+        } catch (error) {
+          console.error(error);
+          alert("⚠️ Error creating order");
+        }
+      });
     </script>
   </body>
 
