@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 import userService from "../services/userService.js";
 
-const authMiddleware = ({ requiredRole } = {}) => {
+const authMiddleware = ({ allowedRoles } = {}) => {
   return async (req, res, next) => {
     try {
       const jwt_secret = process.env.JWT_SECRET;
@@ -23,12 +23,11 @@ const authMiddleware = ({ requiredRole } = {}) => {
         return res.status(401).json({ message: "Unauthorized" });
       }
 
-      // ตรวจ role
-      if (requiredRole && user.role !== requiredRole) {
-        return res.status(403).json({ message: "Forbidden: Admins only" });
+      if (allowedRoles && !allowedRoles.includes(user.role)) {
+        return res.status(403).json({ message: "Forbidden: You do not have access" });
       }
 
-      req.user = user; // เก็บ object user ไว้ใน request
+      req.user = user;
       next();
     } catch (err) {
       return res.status(401).json({ message: "Unauthorized" });

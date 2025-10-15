@@ -181,12 +181,12 @@ import authMiddleware from "../middlewares/apiMiddleware.js";
  */
 
 const useProductRoute = (router) => {
-  router.get('/products', authMiddleware({ requiredRole: "admin" }), productController.getAllProducts);
-  router.get('/products/:id', authMiddleware({ requiredRole: "admin" }), productController.getProductsById);
-  router.post('/products', authMiddleware({ requiredRole: "admin" }), productController.createProducts);
-  router.put('/products/:id', authMiddleware({ requiredRole: "admin" }), productController.updateProducts);
-  router.delete('/products/:id', authMiddleware({ requiredRole: "admin" }), productController.deleteProducts);
-  router.patch('/products/:id', authMiddleware({ requiredRole: "admin" }), productController.restoreProducts);
+  router.get('/products', authMiddleware({ allowedRoles: ["admin"] }), productController.getAllProducts);
+  router.get('/products/:id', authMiddleware({ allowedRoles: ["admin"] }), productController.getProductsById);
+  router.post('/products', authMiddleware({ allowedRoles: ["admin"] }), productController.createProducts);
+  router.put('/products/:id', authMiddleware({ allowedRoles: ["admin"] }), productController.updateProducts);
+  router.delete('/products/:id', authMiddleware({ allowedRoles: ["admin"] }), productController.deleteProducts);
+  router.patch('/products/:id', authMiddleware({ allowedRoles: ["admin"] }), productController.restoreProducts);
 };
 
 export default useProductRoute;
