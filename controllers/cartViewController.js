@@ -1,5 +1,5 @@
 import cartService from "../services/cartService.js";
-
+import cartController from "./cartController.js";
 const cartViewController = {
   getCartView: async (req, res) => {
     try {
@@ -27,6 +27,16 @@ const cartViewController = {
     } catch (err) {
       console.error("Error loading cart:", err);
       res.status(500).send("Error loading cart");
+    }
+  },
+  additem: async (req, res) => {
+    try {
+      const userID = req.user;
+      const { productID, quantity } = req.body;
+      const cart = await cartService.addItem(userID, productID, quantity);
+      res.status(200).json(cart);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
     }
   }
 };
