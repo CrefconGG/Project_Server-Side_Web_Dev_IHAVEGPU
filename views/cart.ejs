@@ -1,99 +1,162 @@
 <%- include('index.ejs') %>
-  <title>My Cart</title>
-  </head>
+<title>My Cart</title>
+</head>
 
-  <body>
-    <div class="navbar">
-      <div class="logo">I HAVE GPU</div>
-      <div class="profile">
-        <% if (user) { %>
-          <span>Welcome, <%= user.role %>
-              <%= user.name %></span>
-          <% if (user.role==='admin' ) { %>
-            <a href="/admin/orders">All Orders</a>
-            <% } else { %>
-              <a href="/orders">My Orders</a>
-              <% } %>
-                <a href="/logout">Logout</a>
-                <% } else { %>
-                  <a href="/login">Login</a>
-                  <% } %>
-      </div>
-    </div>
-
-    <div class="container">
-      <h1>Your Shopping Cart</h1>
-
-      <% if (items.length===0) { %>
-        <p style="text-align:center; margin-top:40px;">
-          Your cart is empty.
-          <a href="/" style="color:#2a9d8f; text-decoration:none;">Start Shopping</a>
-        </p>
+<body>
+  <div class="navbar">
+    <div class="logo">I HAVE GPU</div>
+    <div class="profile">
+      <% if (user) { %>
+        <span>Welcome, <%= user.role %> <%= user.name %></span>
+        <% if (user.role === 'admin') { %>
+          <a href="/admin/orders">All Orders</a>
         <% } else { %>
-          <div class="product-list">
-            <% items.forEach(function(product) { %>
-              <div class="product-card">
-                <img src="<%= product.image %>" alt="<%= product.name %>">
-                <h2>
-                  <%= product.name %>
-                </h2>
-                <p><strong>$<%= product.price.toFixed(2) %></strong></p>
-
-                <p>Quantity: <%= product.quantity %>
-                </p>
-                <p>Subtotal: <strong>$<%= product.subtotal.toFixed(2) %></strong></p>
-
-                <!-- ปุ่มลบ (ใช้ fetch DELETE) -->
-                <button class="remove-btn" data-id="<%= product.id %>"
-                  style="background-color:#d9534f; margin-top:10px;">
-                  Remove
-                </button>
-              </div>
-              <% }) %>
-          </div>
-
-          <!-- สรุปยอดรวม -->
-          <div style="text-align:right; margin-top:30px;">
-            <h2>Total: $<%= total.toFixed(2) %>
-            </h2>
-
-            <form action="/order/create" method="POST" style="margin-top:10px;">
-              <button type="submit" style="background-color:#2a9d8f;">Checkout</button>
-            </form>
-          </div>
-          <% } %>
+          <a href="/orders">My Orders</a>
+        <% } %>
+        <a href="/logout">Logout</a>
+      <% } else { %>
+        <a href="/login">Login</a>
+      <% } %>
     </div>
+  </div>
 
-    <!-- ✅ Script ส่วนจัดการ Remove -->
-    <script>
-      document.querySelectorAll(".remove-btn").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const productID = btn.getAttribute("data-id");
+  <div class="container">
+    <h1>Your Shopping Cart</h1>
 
-          if (!confirm("Remove this item from cart?")) return;
+    <% if (items.length === 0) { %>
+      <p style="text-align:center; margin-top:40px;">
+        Your cart is empty.
+        <a href="/" style="color:#2a9d8f; text-decoration:none;">Start Shopping</a>
+      </p>
+    <% } else { %>
+      <div class="product-list">
+        <% items.forEach(function(product) { %>
+          <div class="product-card">
+            <img src="<%= product.image %>" alt="<%= product.name %>">
+            <h2><%= product.name %></h2>
+            <p><strong>$<%= product.price.toFixed(2) %></strong></p>
 
-          try {
-            const res = await fetch(`/api/cart/items/${productID}`, {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-              credentials: 'include' // ✅ ส่ง cookie ไปด้วย
-            });
+            <!-- ปรับจำนวนสินค้า -->
+            <div style="margin:10px 0;">
+              <label>Quantity:</label>
+              <input type="number" 
+                     class="qty-input" 
+                     data-id="<%= product.id %>" 
+                     value="<%= product.quantity %>" 
+                     min="1" 
+                     style="width:60px; text-align:center;">
+            </div>
 
-            if (res.ok) {
-              alert("🗑️ Item removed from cart!");
-              location.reload();
-            } else {
-              const err = await res.json();
-              alert("❌ Failed to remove: " + (err.message || res.statusText));
-            }
-          } catch (error) {
-            console.error(error);
-            alert("⚠️ Error removing item");
+            <p>Subtotal: <strong>$<%= product.subtotal.toFixed(2) %></strong></p>
+
+            <!-- ปุ่ม Remove -->
+            <button 
+              class="remove-btn" 
+              data-id="<%= product.id %>" 
+              style="background-color:#d9534f; margin-top:10px;">
+              Remove
+            </button>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- สรุปยอดรวม -->
+      <div style="text-align:right; margin-top:30px;">
+        <h2>Total: $<%= total.toFixed(2) %></h2>
+
+        <!-- ปุ่ม Clear Cart -->
+        <button id="clearCartBtn" style="background-color:#555; margin-top:10px;">Clear Cart</button>
+
+        <!-- ปุ่ม Checkout -->
+        <form action="/order/create" method="POST" style="display:inline;">
+          <button type="submit" style="background-color:#2a9d8f;">Checkout</button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- ✅ Script ส่วนควบคุม -->
+  <script>
+    // 🗑️ Remove item
+    document.querySelectorAll(".remove-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const productID = btn.getAttribute("data-id");
+        if (!confirm("Remove this item from cart?")) return;
+
+        try {
+          const res = await fetch(`/api/cart/items/${productID}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" }
+          });
+
+          if (res.ok) {
+            alert("🗑️ Item removed!");
+            location.reload();
+          } else {
+            const err = await res.json();
+            alert("❌ " + (err.error || res.statusText));
           }
-        });
+        } catch (error) {
+          console.error(error);
+          alert("⚠️ Error removing item");
+        }
       });
+    });
 
-    </script>
-  </body>
+    // 🔁 Update quantity
+    document.querySelectorAll(".qty-input").forEach(input => {
+      input.addEventListener("change", async () => {
+        const productID = input.getAttribute("data-id");
+        const quantity = parseInt(input.value);
 
-  </html>
+        if (isNaN(quantity) || quantity < 1) {
+          alert("⚠️ Quantity must be at least 1");
+          input.value = 1;
+          return;
+        }
+
+        try {
+          const res = await fetch(`/api/cart/items/${productID}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ quantity })
+          });
+
+          if (res.ok) {
+            location.reload();
+          } else {
+            const err = await res.json();
+            alert("❌ " + (err.error || res.statusText));
+          }
+        } catch (error) {
+          console.error(error);
+          alert("⚠️ Error updating quantity");
+        }
+      });
+    });
+
+    // 🧹 Clear cart
+    document.getElementById("clearCartBtn")?.addEventListener("click", async () => {
+      if (!confirm("Clear all items in your cart?")) return;
+
+      try {
+        const res = await fetch(`/api/cart`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" }
+        });
+
+        if (res.ok) {
+          alert("🧺 Cart cleared!");
+          location.reload();
+        } else {
+          const err = await res.json();
+          alert("❌ " + (err.error || res.statusText));
+        }
+      } catch (error) {
+        console.error(error);
+        alert("⚠️ Error clearing cart");
+      }
+    });
+  </script>
+</body>
+</html>
