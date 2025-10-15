@@ -5,6 +5,8 @@ import router from './routes/router.js'
 import webRouter from './routes/webRouter.js'
 import cookieParser from "cookie-parser";
 import path from 'path'
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./swagger.js";
 
 const app = express()
 const port = 3000
@@ -35,6 +37,10 @@ app.use(cookieParser());
 app.use("/api", router)
 app.use(webRouter)
 
+// Swagger UI
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
+  console.log("Swagger: http://localhost:3000/api-docs");
 })
