@@ -181,8 +181,8 @@ import authMiddleware from "../middlewares/apiMiddleware.js";
  */
 
 const useProductRoute = (router) => {
-  router.get('/products', authMiddleware({ allowedRoles: ["admin"] }), productController.getAllProducts);
-  router.get('/products/:id', authMiddleware({ allowedRoles: ["admin"] }), productController.getProductsById);
+  router.get('/products', productController.getAllProducts);
+  router.get('/products/:id', productController.getProductsById);
   router.post('/products', authMiddleware({ allowedRoles: ["admin"] }), productController.createProducts);
   router.put('/products/:id', authMiddleware({ allowedRoles: ["admin"] }), productController.updateProducts);
   router.delete('/products/:id', authMiddleware({ allowedRoles: ["admin"] }), productController.deleteProducts);

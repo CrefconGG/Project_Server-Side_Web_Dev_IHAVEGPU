@@ -1,48 +1,24 @@
-import dotenv from 'dotenv'
-import express from 'express'
-import mongoose from 'mongoose'
-import router from './routes/router.js'
-import webRouter from './routes/webRouter.js'
-import cookieParser from "cookie-parser";
-import path from 'path'
-import swaggerUi from "swagger-ui-express";
-import swaggerSpec from "./swagger.js";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import app from "./app.js";
 
-const app = express()
-const port = 3000
+dotenv.config();
 
-// Set EJS as the view engine
-app.set('view engine', 'ejs');
-app.set('views', path.resolve('./views'));
-app.use(express.static('public'));
+const dbUrl = process.env.DB_URL;
 
-dotenv.config()
-
-const dbUrl = process.env.DB_URL
 const connect = async () => {
-   try {
-      await mongoose.connect(dbUrl)  
-      console.log('Connected to MongoDB successfully')
-   } catch (error) {
-      console.error('Error connecting to MongoDB:', error)
-   }
-}
-await connect()
+  try {
+    await mongoose.connect(dbUrl);
+    console.log("Connected to MongoDB successfully");
+  } catch (err) {
+    console.error("Error connecting to MongoDB:", err);
+  }
+};
 
-// Middleware to parse JSON and URL-encoded data
-app.use(express.json()); // To parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // To parse URL-encoded bodies
-app.use(cookieParser());
+await connect();
 
-app.use("/api", router)
-app.use(webRouter)
-
-// Swagger UI
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
-    console.log(`Swagger: http://localhost:${port}/api-docs`);
-  });
-}
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+  console.log(`Swagger: http://localhost:${port}/api-docs`);
+});
