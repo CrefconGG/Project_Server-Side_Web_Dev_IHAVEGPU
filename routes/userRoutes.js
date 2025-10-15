@@ -1,5 +1,5 @@
 import userController from "../controllers/userController.js"
-import authMiddleware from "../middlewares/authMiddleware.js"
+import authMiddleware from "../middlewares/apiMiddleware.js"
 
 /**
  * @swagger
@@ -51,7 +51,7 @@ const useUserRoute = async (router) => {
    *               items:
    *                 $ref: '#/components/schemas/User'
    */
-  router.get('/user', authMiddleware({ requiredRole: "admin" }), userController.getAllUsers)
+  router.get('/user', authMiddleware(), userController.getAllUsers)
 
 
   /**
@@ -77,7 +77,7 @@ const useUserRoute = async (router) => {
    *       404:
    *         description: ไม่พบผู้ใช้
    */
-  router.get('/user/:id', authMiddleware({ requiredRole: "admin" }), userController.getUserById)
+  router.get('/user/:id', authMiddleware(), userController.getUserById)
 
 
 
@@ -103,7 +103,7 @@ const useUserRoute = async (router) => {
    *       200:
    *         description: อัปเดตสำเร็จ
    */
-  router.put('/user/:id', authMiddleware({ requiredRole: "admin" }), userController.updateUser)
+  router.put('/user/:id', authMiddleware(), userController.updateUser)
 
 
   /**
@@ -122,7 +122,7 @@ const useUserRoute = async (router) => {
    *       200:
    *         description: ลบสำเร็จ
    */
-  router.delete('/user/:id', authMiddleware({ requiredRole: "admin" }), userController.softDeleteUser)
+  router.delete('/user/:id', authMiddleware(), userController.softDeleteUser)
 
 
   /**
@@ -141,7 +141,7 @@ const useUserRoute = async (router) => {
    *       200:
    *         description: กู้คืนสำเร็จ
    */
-  router.patch('/user/:id', authMiddleware({ requiredRole: "admin" }), userController.restoreUser)
+  router.patch('/user/:id', authMiddleware(), userController.restoreUser)
 
 
   /**
