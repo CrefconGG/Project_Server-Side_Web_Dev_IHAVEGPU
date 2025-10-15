@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Order Details</title>
-  <link rel="stylesheet" href="/src/style.css">
+  <link rel="stylesheet" href="/src/orderdetails.css">
 </head>
 <body>
     <div class="navbar">
@@ -16,28 +16,29 @@
         <% } %>
         </div>
     </div>
-  <h1>Order Details</h1>
+   <div class="order-details">
+    <h1>Order Details</h1>
 
-  <p><strong>Order ID:</strong> <%= order._id %></p>
-  <p><strong>Status:</strong> <%= order.status %></p>
-  <p><strong>Total Price:</strong> <%= order.totalPrice %> ฿</p>
-  <p><strong>Created At:</strong> <%= new Date(order.createdAt).toLocaleString() %></p>
+    <p><strong>Order ID:</strong> <%= order._id %></p>
+    <p><strong>Status:</strong> <span class="status <%= order.status %>"><%= order.status %></span></p>
+    <p><strong>Total Price:</strong> <%= order.totalPrice %> ฿</p>
+    <p><strong>Created At:</strong> <%= new Date(order.createdAt).toLocaleString() %></p>
 
-  <% if(user.role === 'admin'){ %>
-    <p><strong>User:</strong> <%= order.user.name %> (<%= order.user.email %>)</p>
-  <% } %>
+    <% if(user.role === 'admin'){ %>
+      <p><strong>User:</strong> <%= order.user.name %> (<%= order.user.email %>)</p>
+    <% } %>
 
-  <h2>Items</h2>
-  <ul>
-    <% order.items.forEach(item => { %>
-      <li>
-        <strong><%= item.product.name %></strong> — 
-        <%= item.quantity %> × <%= item.price %> ฿
-      </li>
-    <% }) %>
-  </ul>
+    <h2>Items</h2>
+    <ul>
+      <% order.items.forEach(item => { %>
+        <li>
+          <strong><%= item.product.name %></strong>
+          <span><%= item.quantity %> × <%= item.price %> ฿</span>
+        </li>
+      <% }) %>
+    </ul>
 
-  <!-- Back button -->
-  <a href="<%= user.role === 'admin' ? '/admin/orders' : '/orders' %>">Back to Orders</a>
-</body>
+    <!-- Back button -->
+    <a href="<%= user.role === 'admin' ? '/admin/orders' : '/orders' %>">Back to Orders</a>
+  </div>
 </html>
