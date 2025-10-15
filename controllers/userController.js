@@ -2,6 +2,10 @@ import userService from "../services/userService.js"
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
+const usernameRegex = /^[a-zA-Z0-9_.]{3,20}$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+
 const userController = {
   getAllUsers: async (req, res) => {
     try {
@@ -15,6 +19,7 @@ const userController = {
     try {
       const id = req.params.id
       const user = await userService.getUserById(id)
+      if (!user) return res.status(404).json({ errors: ["User not found"] });
       res.status(200).json(user)
     } catch (err) {
       res.status(500).json(err)
@@ -62,6 +67,15 @@ const userController = {
   register: async (req, res) => {
     try {
       const { name, email, password } = req.body;
+      const errors = [];
+
+      if (!name || !usernameRegex.test(name)) errors.push("Invalid or missing username");
+      if (!email || !emailRegex.test(email)) errors.push("Invalid or missing email");
+      if (!password || !passwordRegex.test(password)) errors.push("Invalid or missing password");
+      if (await userService.getByUsername(name)) errors.push("Username already exists");
+      if (await userService.getByEmail(email)) errors.push("Email already exists");
+      if (errors.length > 0) return res.status(400).json({ errors });
+      
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await userService.createUser(name, email, hashedPassword, 'user');
       res.status(201).json(user);
