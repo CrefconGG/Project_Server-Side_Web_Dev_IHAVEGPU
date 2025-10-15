@@ -73,8 +73,8 @@ const userController = {
       if (!email || !emailRegex.test(email)) errors.push("Invalid or missing email");
       if (!password || !passwordRegex.test(password)) errors.push("Invalid or missing password");
       if (await userService.getByUsername(name)) errors.push("Username already exists");
-      if (await userService.getByEmail(email)) errors.push("Email already exists");
-      if (errors.length > 0) return res.status(400).json({ errors });
+      // if (await userService.getByEmail(email)) errors.push("Email already exists");
+      // if (errors.length > 0) return res.status(400).json({ errors });
       
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await userService.createUser(name, email, hashedPassword, 'user');
