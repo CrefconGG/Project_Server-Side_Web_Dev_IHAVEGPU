@@ -45,7 +45,71 @@ import authMiddleware from "../middlewares/apiMiddleware.js";
  *         imagesURL: example.com
  *         isDeleted: false
  */
-
+/**
+ * @swagger
+ * /pagination:
+ *   get:
+ *     summary: Get all products with pagination, search, category filter, and sorting
+ *     tags: [Products]
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search products by name (case-insensitive)
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Filter products by category
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 8
+ *         description: Number of products per page
+ *       - in: query
+ *         name: sortOption
+ *         schema:
+ *           type: string
+ *           enum: [priceAsc, priceDesc, nameAsc, nameDesc]
+ *           default: ""
+ *         description: Sorting option
+ *     responses:
+ *       200:
+ *         description: List of products with pagination info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 page:
+ *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *                 total:
+ *                   type: integer
+ *                 totalPages:
+ *                   type: integer
+ *                 sort:
+ *                   type: string
+ *                 categories:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Product'
+ *       500:
+ *         description: Server error
+ */
 /**
  * @swagger
  * /products:
@@ -181,6 +245,7 @@ import authMiddleware from "../middlewares/apiMiddleware.js";
  */
 
 const useProductRoute = (router) => {
+  router.get('/pagination', productController.getProductPaginated)
   router.get('/products', productController.getAllProducts);
   router.get('/products/:id', productController.getProductsById);
   router.post('/products', authMiddleware({ allowedRoles: ["admin"] }), productController.createProducts);

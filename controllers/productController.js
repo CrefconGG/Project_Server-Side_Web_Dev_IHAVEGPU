@@ -9,6 +9,38 @@ const productController = {
             res.status(500).json(err);
         }
     },
+    getProductPaginated: async (req, res) => {
+         try {
+            // Extract query params
+            const { search = '', category = '', page = 1, limit = 8, sortOption = '' } = req.query;
+
+            // Build filter
+            const filter = {};
+            if (search) filter.name = { $regex: search, $options: 'i' };
+            if (category) filter.category = category;
+
+            // Get total products count
+            const total = await productService.countProducts(filter);
+
+            // Get paginated products
+            const products = await productService.getProductsPaginated(filter, Number(page), Number(limit), sortOption);
+
+            // Optional: get all categories
+            const categories = await productService.getAllCategories();
+
+            res.status(200).json({
+              page: Number(page),
+              limit: Number(limit),
+              total,
+              totalPages: Math.ceil(total / limit),
+              sort: sortOption,
+              categories,
+              data: products
+            });
+            } catch (err) {
+              res.status(500).json({ message: err.message || "Server error" });
+            }
+    },
     getProductsById: async (req, res) => {
         try {
             const id = req.params.id;
