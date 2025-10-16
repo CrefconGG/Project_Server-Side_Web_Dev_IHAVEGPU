@@ -5,7 +5,7 @@ const CartSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-    unique: true, // ✅ 1 user มีได้แค่ 1 cart เท่านั้น
+    unique: true, //  1 user มีได้แค่ 1 cart เท่านั้น
   },
   items: [
     {
@@ -17,12 +17,11 @@ const CartSchema = new mongoose.Schema({
       quantity: {
         type: Number,
         default: 1,
-        min: 1, // ✅ ป้องกันค่าติดลบ
+        min: 1, 
       },
     },
   ],
-}, { timestamps: true }); // ✅ บันทึกเวลา createdAt / updatedAt อัตโนมัติ
-
+}, { timestamps: true }); 
 const Cart = mongoose.model("Cart", CartSchema);
 
 export default Cart;

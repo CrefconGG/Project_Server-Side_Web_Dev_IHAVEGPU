@@ -10,100 +10,157 @@ import authMiddleware from "../middlewares/apiMiddleware.js"
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     OrderItem:
+ *       type: object
+ *       required:
+ *         - product
+ *         - quantity
+ *         - price
+ *       properties:
+ *         product:
+ *           type: string
+ *           description: Product ID
+ *           example: "67100c9013c45b65a24a1af3"
+ *         quantity:
+ *           type: integer
+ *           description: Number of units
+ *           example: 2
+ *         price:
+ *           type: number
+ *           description: Price per item
+ *           example: 499.99
+ *     Order:
+ *       type: object
+ *       required:
+ *         - user
+ *         - items
+ *         - totalPrice
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: "672028dc2e41e4cb9f00145f"
+ *         user:
+ *           type: string
+ *           description: User ID who placed the order
+ *           example: "67100c8d13c45b65a24a1aef"
+ *         items:
+ *           type: array
+ *           description: List of purchased items
+ *           items:
+ *             $ref: '#/components/schemas/OrderItem'
+ *         totalPrice:
+ *           type: number
+ *           description: Total price of all items
+ *           example: 999.98
+ *         status:
+ *           type: string
+ *           enum: [pending, paid, cancelled]
+ *           default: pending
+ *           example: "paid"
+ *         isDeleted:
+ *           type: boolean
+ *           default: false
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           example: "2025-10-16T12:00:00Z"
+ */
+
+/**
+ * @swagger
  * /orders:
+ *   get:
+ *     summary: Get orders of current user
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Order'
  *   post:
- *     summary: สร้างคำสั่งซื้อใหม่
+ *     summary: Create a new order from user's cart
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       201:
- *         description: สร้างคำสั่งซื้อสำเร็จ
- *       400:
- *         description: คำขอไม่ถูกต้อง
- *
- *   get:
- *     summary: ดึงคำสั่งซื้อของผู้ใช้ปัจจุบัน
- *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: สำเร็จ
- *       401:
- *         description: ไม่ได้เข้าสู่ระบบ
- */
-
-/**
- * @swagger
- * /orders/user/{id}:
- *   get:
- *     summary: ดึงคำสั่งซื้อของผู้ใช้ตาม ID (admin เท่านั้น)
- *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: ID ของผู้ใช้
- *     responses:
- *       200:
- *         description: สำเร็จ
- *       403:
- *         description: ไม่มีสิทธิ์เข้าถึง
- */
-
-/**
- * @swagger
- * /admin/orders:
- *   get:
- *     summary: ดึงคำสั่งซื้อทั้งหมด (admin เท่านั้น)
- *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: สำเร็จ
- *       403:
- *         description: ไม่มีสิทธิ์เข้าถึง
+ *         description: Order created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Order'
  */
 
 /**
  * @swagger
  * /orders/{id}:
  *   get:
- *     summary: ดึงรายละเอียดคำสั่งซื้อด้วย ID (admin เท่านั้น)
+ *     summary: Get an order by ID (User can only view their own, Admin can view all)
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: ID ของคำสั่งซื้อ
+ *         description: Order ID
  *     responses:
  *       200:
- *         description: สำเร็จ
+ *         description: Order found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Order'
+ *       403:
+ *         description: Access denied
  *       404:
- *         description: ไม่พบข้อมูล
- *
+ *         description: Order not found
+ */
+
+/**
+ * @swagger
+ * /admin/orders:
+ *   get:
+ *     summary: Get all orders (Admin only)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Order'
+ */
+
+/**
+ * @swagger
+ * /orders/{id}/status:
  *   patch:
- *     summary: เปลี่ยนสถานะคำสั่งซื้อ (admin เท่านั้น)
+ *     summary: Update order status (Admin only)
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: ID ของคำสั่งซื้อ
+ *         description: Order ID
  *     requestBody:
  *       required: true
  *       content:
@@ -113,36 +170,21 @@ import authMiddleware from "../middlewares/apiMiddleware.js"
  *             properties:
  *               status:
  *                 type: string
- *                 example: complete
+ *                 enum: [pending, paid, cancelled]
  *     responses:
  *       200:
- *         description: อัปเดตสำเร็จ
- */
-
-/**
- * @swagger
- * /orders/{id}/restore:
- *   patch:
- *     summary: กู้คืนคำสั่งซื้อ (admin เท่านั้น)
- *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: กู้คืนสำเร็จ
+ *         description: Updated order
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Order'
  */
 
 /**
  * @swagger
  * /orders/{id}:
  *   delete:
- *     summary: ลบคำสั่งซื้อด้วย ID (admin เท่านั้น)
+ *     summary: Soft delete an order (Admin only)
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
@@ -152,28 +194,30 @@ import authMiddleware from "../middlewares/apiMiddleware.js"
  *         required: true
  *         schema:
  *           type: string
+ *         description: Order ID
  *     responses:
  *       200:
- *         description: ลบสำเร็จ
+ *         description: Order soft deleted
  */
 
 /**
  * @swagger
- * /orders/user/{userID}:
- *   delete:
- *     summary: ลบคำสั่งซื้อทั้งหมดของผู้ใช้ (admin เท่านั้น)
+ * /orders/{id}/restore:
+ *   patch:
+ *     summary: Restore a soft-deleted order (Admin only)
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: userID
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
+ *         description: Order ID
  *     responses:
  *       200:
- *         description: ลบสำเร็จ
+ *         description: Order restored
  */
 
 const useOrderRoute = async (router) => {
