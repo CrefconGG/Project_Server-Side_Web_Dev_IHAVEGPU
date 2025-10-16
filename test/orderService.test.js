@@ -36,7 +36,7 @@ describe("orderService.createOrder", () => {
     };
     Order.create.mockResolvedValue(mockOrderCreated);
 
-    // เรียกใช้ฟังก์ชันจริง
+    
     const result = await orderService.createOrder(mockUserId);
 
     expect(Cart.findOne).toHaveBeenCalledWith({ user: mockUserId });

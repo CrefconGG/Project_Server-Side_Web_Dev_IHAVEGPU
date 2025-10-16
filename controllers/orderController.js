@@ -20,6 +20,10 @@ const orderController = {
                 return res.status(404).json({ errors: ["Order not found"] });
             }
 
+            if (req.user.role !== "admin" && order.user.toString() !== req.user.id) {
+                return res.status(403).json({ errors: ["You do not have permission to view this order"] });
+            }
+
             res.status(200).json(order);
         } catch (err) {
             res.status(500).json(err);

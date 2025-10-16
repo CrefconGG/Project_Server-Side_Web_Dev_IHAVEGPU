@@ -23,6 +23,7 @@ describe("Product API Integration Tests", () => {
     expect(Array.isArray(res.body)).toBe(true);
   });
 
+  // GET /api/products/:id 
   it("GET /api/products/:id → should return single product", async () => {
     const mockProduct = { _id: "1", name: "RTX9070" };
     productService.getProductsByID.mockResolvedValue(mockProduct);
@@ -32,4 +33,5 @@ describe("Product API Integration Tests", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual(mockProduct);
   });
+
 });
