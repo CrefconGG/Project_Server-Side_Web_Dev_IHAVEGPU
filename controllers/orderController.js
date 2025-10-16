@@ -1,5 +1,7 @@
 import orderService from '../services/orderService.js';
 
+const validStatuses = ["pending", "paid", "cancelled"];
+
 const orderController = {
     getAllOrders: async (req, res) => {
         try {
@@ -13,6 +15,11 @@ const orderController = {
         try {
             const id = req.params.OrderId;
             const order = await orderService.getOrderById(id);
+
+            if (!order) {
+                return res.status(404).json({ errors: ["Order not found"] });
+            }
+
             res.status(200).json(order);
         } catch (err) {
             res.status(500).json(err);
@@ -50,6 +57,16 @@ const orderController = {
         try {
             const id = req.params.id
             const { status } = req.body;
+            const errors = [];
+
+            if (!status || !validStatuses.includes(status)) {
+                errors.push("Invalid status value must be 'pending', 'paid', or 'cancelled'");
+            }
+
+            if (errors.length > 0) {
+                return res.status(400).json({ errors });
+            }
+
             const updatedOrder = await orderService.updateOrderStatus(id, status);
             res.status(200).json(updatedOrder);
         } catch (err) {
